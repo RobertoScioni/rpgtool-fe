@@ -144,19 +144,19 @@ const Chat = () => {
 		<div className="h-screen flex flex-col">
 			<div className="bg-red-800 p-1 m-2 mb-0">menu area</div>
 			<div className="flex-grow border-solid border-4 border-light-blue-500 mx-2 overflow-y-hidden">
-				<div className="flex1 flex flex-row overflow-y-hidden">
+				<div className="flex-1 flex flex-row overflow-y-hidden">
 					<div
 						id="Inbox"
-						className="flex-grow border-solid border-4 overflow-y-scroll"
+						className="flex-grow border-solid border-4 overflow-y-auto"
 					>
 						{messages.length > 0 &&
 							messages.map((element) => <div>{element.text}</div>)}
 					</div>
 					<div
 						id="entitySelector"
-						className="box-content border-solid border-4 h-full max-h-full overflow-y-scroll w-max"
+						className="box-content border-solid border-4 h-full max-h-full w-max"
 					>
-						<div id="notMine h-full">
+						<div id="notMine h-full overflow-y-auto">
 							{scene &&
 								scene.players.length &&
 								scene.players.map((player) => (
