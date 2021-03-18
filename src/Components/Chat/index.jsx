@@ -144,7 +144,7 @@ const Chat = () => {
 		<div className="h-screen flex flex-col">
 			<div className="bg-red-800 p-1 m-2 mb-0">menu area</div>
 			<div className="flex-grow border-solid border-4 border-light-blue-500 mx-2 overflow-y-hidden">
-				<div className="flex1 flex flex-row overflow-y-hidden">
+				<div className="h-full flex flex-row overflow-y-hidden">
 					<div
 						id="Inbox"
 						className="flex-grow border-solid border-4 overflow-y-scroll"
