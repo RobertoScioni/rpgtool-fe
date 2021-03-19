@@ -9,13 +9,17 @@ const connOptions = {
 
 const user = {
 	name: "alphaTester",
+	socketid: "Dgg3AUDUMEEMORk-AAAc",
+	_id: "03",
 	picUrl: "https://placekitten.com/100/100",
 	characters: [
 		{
+			_id: "01",
 			name: "jake of the pecking albatros",
 			picUrl: "https://placekitten.com/100/100",
 		},
 		{
+			_id: "02",
 			name: "steven of the treacherous seagul",
 			picUrl: "https://placekitten.com/100/100",
 		},
@@ -95,13 +99,16 @@ const Chat = () => {
 	const [send, setSend] = useState(false)
 	const [recipientPlayers, setRecipientPlayers] = useState([])
 	const [recipientCharacters, setRecipientCharacters] = useState([])
+	const [identity, setIdentity] = useState({})
 	const toggleCharacterInRecipients = (character) => {
 		if (!recipientCharacters.includes(character)) {
 			setRecipientCharacters(() => recipientCharacters.concat(character))
 		} else {
 			const update = [...recipientCharacters]
 			update.splice(
-				recipientCharacters.findIndex((element) => element === character),
+				recipientCharacters.findIndex(
+					(element) => element._id === character._id
+				),
 				1
 			)
 			setRecipientCharacters(update)
@@ -113,12 +120,25 @@ const Chat = () => {
 		} else {
 			const update = [...recipientPlayers]
 			update.splice(
-				recipientPlayers.findIndex((element) => element === player),
+				recipientPlayers.findIndex((element) => element._id === player._id),
 				1
 			)
 			setRecipientPlayers(update)
 		}
 	}
+
+	const impersonate = (character) => {
+		console.log("change identity", character._id)
+
+		if (character._id !== identity._id) {
+			console.log("into ", character.name)
+			setIdentity(character)
+		} else {
+			console.log("back to yourself", user.name)
+			setIdentity(user)
+		}
+	}
+
 	useEffect(() => {
 		console.log("this should connect to the backend")
 		socket.on("message", (message) =>
@@ -210,6 +230,14 @@ const Chat = () => {
 										src={character.picUrl}
 										className="m-1"
 										title={character.name}
+										onClick={(e) => {
+											impersonate(character)
+										}}
+										className={
+											identity._id === character._id
+												? "m-2 ring-4 ring-indigo-400"
+												: "m-2"
+										}
 									/>
 								))}
 							{user && (
@@ -217,6 +245,14 @@ const Chat = () => {
 									src={user.picUrl}
 									className="m-1 rounded-full"
 									title={user.name}
+									className={
+										identity._id === user._id
+											? "m-2 rounded-full ring-4 ring-indigo-400"
+											: "rounded-full m-2"
+									}
+									onClick={(e) => {
+										impersonate(user)
+									}}
 								/>
 							)}
 						</div>

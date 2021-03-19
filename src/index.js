@@ -6,6 +6,8 @@ import App from "./App"
 import reportWebVitals from "./reportWebVitals"
 import Login from "./Components/Login"
 import Chat from "./Components/Chat"
+import Scenes from "./Components/Scenes"
+import Characters from "./Components/Characters"
 
 ReactDOM.render(
 	<BrowserRouter>
@@ -16,8 +18,14 @@ ReactDOM.render(
 			<Route exact path="/login">
 				<Login />
 			</Route>
-			<Route exact path="/chat">
+			<Route path="/chat">
 				<Chat />
+			</Route>
+			<Route exact path="/scenes">
+				<Scenes />
+			</Route>
+			<Route exact path="/characters">
+				<Characters />
 			</Route>
 		</React.StrictMode>
 	</BrowserRouter>,
