@@ -9,6 +9,8 @@ import Chat from "./Components/Chat"
 import Scenes from "./Components/Scenes"
 import Characters from "./Components/Characters"
 
+console.log("backend at", process.env.REACT_APP_BACKEND)
+
 ReactDOM.render(
 	<BrowserRouter>
 		<React.StrictMode>

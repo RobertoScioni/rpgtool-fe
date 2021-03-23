@@ -92,7 +92,7 @@ const scene = {
 	],
 }
 
-let socket = io("127.0.0.1:9999", connOptions) //socket instance
+let socket = io(process.env.REACT_APP_BACKEND, connOptions) //socket instance
 const Chat = () => {
 	const [messages, setMessages] = useState([])
 	const [input, setInput] = useState("")
