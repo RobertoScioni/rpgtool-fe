@@ -21,7 +21,10 @@ ReactDOM.render(
 			<Route exact path="/login">
 				<Login />
 			</Route>
-			<Route path="/chat">
+			<Route path="/chat/:id">
+				<Chat />
+			</Route>
+			<Route exact path="/chat">
 				<Chat />
 			</Route>
 			<Route exact path="/scenes">
