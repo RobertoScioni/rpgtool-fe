@@ -7,6 +7,7 @@ import reportWebVitals from "./reportWebVitals"
 import Login from "./Components/Login"
 import Chat from "./Components/Chat"
 import Scenes from "./Components/Scenes"
+import Scene from "./Components/Scenes/scene"
 import Characters from "./Components/Characters"
 
 console.log("backend at", process.env.REACT_APP_BACKEND)
@@ -25,6 +26,9 @@ ReactDOM.render(
 			</Route>
 			<Route exact path="/scenes">
 				<Scenes />
+			</Route>
+			<Route path="/scene/:id">
+				<Scene />
 			</Route>
 			<Route exact path="/characters">
 				<Characters />
