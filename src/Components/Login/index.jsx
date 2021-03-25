@@ -15,8 +15,7 @@ const Login = () => {
 			console.log("password:", password)
 			console.log("here goeas the fetch, in theory at least")
 			//const body = { email, password }
-			const URL = "http://127.0.0.1:9999"
-			const me = await fetch(`${URL}/users/login`, {
+			let me = await fetch(`${process.env.REACT_APP_BACKEND}/users/login`, {
 				method: "POST",
 				credentials: "include",
 				body: JSON.stringify({ email, password }),
@@ -24,7 +23,10 @@ const Login = () => {
 					"Content-Type": "application/json",
 				}),
 			})
-			history.push("/chat")
+			me = await me.json()
+			console.log(me)
+			localStorage.setItem("id", me)
+			history.push("/scenes")
 		},
 		[send]
 	)
