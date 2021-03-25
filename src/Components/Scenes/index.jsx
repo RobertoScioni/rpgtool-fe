@@ -8,7 +8,7 @@
  */
 import { useState, useEffect } from "react"
 import { useDropzone } from "react-dropzone"
-import Element from "./element"
+import Element from "../element"
 const Scenes = () => {
 	const [scenes, setScenes] = useState([])
 	const [reload, setReload] = useState(false)
@@ -73,13 +73,58 @@ const Scenes = () => {
 		getElements()
 	}, [reload])
 	return (
-		<div className="h-screen flex flex-col">
-			<div className="bg-red-800 p-1 m-2 mb-0">menu area</div>
-			<div className="flex-grow bg-blue-500 border-solid border-4 border-light-blue-500 mx-2 overflow-y-hidden">
+		<div>
+			<div className="flex justify-center my-5 bg-yellow-500 p-1">
+				<div>
+					<p className=" text-center">NEW SCENE</p>
+					<Element save={createElement} />
+				</div>
+			</div>
+			<div className="grid gap-1  grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 justify-items-center">
 				{scenes.map((scene, index) => (
-					<Element entry={scene} key={`scene-${index}`} save={createElement} />
+					<div className="flex bg-yellow-500 w-min p-1">
+						<Element
+							entry={scene}
+							key={`scene-${index}`}
+							save={createElement}
+						/>
+						<div className="">
+							<div>
+								<a href={`/chat/${scene._id}`}>
+									<svg
+										className="h-8 w-8 text-green-500"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										strokeWidth="2"
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										title="Start the Scene"
+									>
+										<polygon points="5 3 19 12 5 21 5 3" />
+									</svg>
+								</a>
+							</div>
+							<div>
+								<a href={`/scene/${scene._id}`}>
+									<svg
+										className="h-8 w-8 text-green-500"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke="currentColor"
+									>
+										<path
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											strokeWidth="2"
+											d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+										/>
+									</svg>
+								</a>
+							</div>
+						</div>
+					</div>
 				))}
-				<Element save={createElement} />
 			</div>
 		</div>
 	)

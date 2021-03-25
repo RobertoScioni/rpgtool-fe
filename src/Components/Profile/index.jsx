@@ -67,7 +67,6 @@ const Characters = () => {
 	}, [save])
 	return (
 		<div className="h-screen flex flex-col">
-			<div className="bg-red-800 p-1 m-2 mb-0">menu area</div>
 			<div className="flex-grow bg-blue-500 border-solid border-4 border-light-blue-500 mx-2 overflow-y-hidden">
 				<form
 					className=" w-max flex flex-row p-2 border-solid border-2 rounded-md border-black"

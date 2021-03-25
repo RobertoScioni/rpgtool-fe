@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { useParams, Linl } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import io from "socket.io-client"
 const connOptions = {
 	transports: ["websocket", "polling"],
@@ -53,6 +53,12 @@ const Chat = () => {
 		)
 		response = await response.json()
 		console.log("scene fetched", response)
+		setUser(
+			response.members.find(
+				(member) => member._id === localStorage.getItem("id")
+			)
+		)
+		console.log("ZZZZme", user, localStorage.getItem("id"))
 		setScene({ ...response })
 	}
 
@@ -130,22 +136,18 @@ const Chat = () => {
 		console.log("clients", socket.clients)
 	})
 	return (
-		<div className="h-screen flex flex-col">
-			<div className="bg-red-800 p-1 m-2 mb-0">menu area</div>
+		<div className="flex flex-col h-full">
 			<div className="flex-grow border-solid border-4 border-light-blue-500 mx-2 overflow-y-hidden">
-				<div className="h-full flex flex-row overflow-y-hidden">
-					<div
-						id="Inbox"
-						className="flex-grow border-solid border-4 overflow-y-scroll"
-					>
+				<div className="h-full flex flex-row ">
+					<div id="Inbox" className="flex-grow border-solid border-4 ">
 						{messages.length > 0 &&
-							messages.map((element) => (
-								<div key={`message-${element._id}`}>{element.text}</div>
+							messages.map((element, index) => (
+								<div key={`message-${index}`}>{element.text}</div>
 							))}
 					</div>
 					<div
 						id="entitySelector"
-						className="box-content border-solid border-4 h-full max-h-full overflow-y-scroll w-max"
+						className="box-content border-solid border-4 h-full overflow-y-hidden w-max"
 					>
 						<div id="notMine h-full">
 							{scene.members &&
@@ -194,8 +196,8 @@ const Chat = () => {
 							id="myEntities"
 							className="border-solid border-t-4 align-bottom "
 						>
-							{/*user &&
-								user.characters.length &&
+							{user &&
+								user.characters &&
 								user.characters.map((character) => (
 									<img
 										src={character.imageUrl}
@@ -207,26 +209,28 @@ const Chat = () => {
 										}}
 										className={
 											identity._id === character._id
-												? "m-2 ring-4 ring-indigo-400"
-												: "m-2"
+												? "w-20 m-2 ring-4 ring-indigo-400"
+												: "w-20 m-2"
 										}
 									/>
-									))*/}
-							{/*user && (
+								))}
+							{user && (
 								<img
-									src={user.imageUrl}
-									className="m-1 rounded-full"
+									src={
+										user.imageUrl ||
+										"https://res.cloudinary.com/ratanax/image/upload/v1616546238/rpgTool/scenes/ttlrrin7qj3visuxtxyh.jpg"
+									}
 									title={user.name}
 									className={
 										identity._id === user._id
-											? "m-2 rounded-full ring-4 ring-indigo-400"
-											: "rounded-full m-2"
+											? "w-20 h-20 m-2 rounded-full ring-4 ring-indigo-400 object-scale-down bg-gray-500"
+											: "w-20 h-20 rounded-full m-2 object-scale-down bg-gray-500"
 									}
 									onClick={(e) => {
 										impersonate(user)
 									}}
 								/>
-								)*/}
+							)}
 						</div>
 					</div>
 				</div>

@@ -9,6 +9,7 @@ import Chat from "./Components/Chat"
 import Scenes from "./Components/Scenes"
 import Scene from "./Components/Scenes/scene"
 import Characters from "./Components/Characters"
+import NavBar from "./Components/Navbar"
 
 console.log("backend at", process.env.REACT_APP_BACKEND)
 
@@ -22,18 +23,23 @@ ReactDOM.render(
 				<Login />
 			</Route>
 			<Route path="/chat/:id">
+				<NavBar />
 				<Chat />
 			</Route>
 			<Route exact path="/chat">
+				<NavBar />
 				<Chat />
 			</Route>
 			<Route exact path="/scenes">
+				<NavBar />
 				<Scenes />
 			</Route>
 			<Route path="/scene/:id">
+				<NavBar />
 				<Scene />
 			</Route>
 			<Route exact path="/characters">
+				<NavBar />
 				<Characters />
 			</Route>
 		</React.StrictMode>

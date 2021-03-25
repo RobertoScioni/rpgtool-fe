@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react"
 import { Link, useParams } from "react-router-dom"
 
-import MicroElement from "./microElement"
+import MicroElement from "../microElement"
 const Scene = (props) => {
 	let { id } = useParams()
 	const [users, setUsers] = useState([])
 	const [scene, setScene] = useState({})
 	const [players, setPlayers] = useState([])
 	const [characters, setCharacters] = useState([])
+
 	const getPlayers = async () => {
 		let response = await fetch(`${process.env.REACT_APP_BACKEND}/users/`, {
 			method: "GET",
@@ -17,6 +18,14 @@ const Scene = (props) => {
 			}),
 		})
 		response = await response.json()
+		response = response.filter((user) => {
+			return !players.some((player) => {
+				if (player._id === user._id) {
+					player.characters = user.characters
+					return true
+				} else return false
+			})
+		})
 		setUsers([...response])
 		console.log("scenes", users)
 	}
@@ -64,6 +73,15 @@ const Scene = (props) => {
 		)
 		response = await response.json()
 		setScene({ ...response })
+		setPlayers([...response.members])
+		setCharacters(
+			[].concat.apply(
+				[],
+				response.members.map((player) =>
+					player.characters.map((character) => character._id)
+				)
+			)
+		)
 		console.log("scenes", users)
 	}
 
@@ -81,7 +99,7 @@ const Scene = (props) => {
 			})
 		}
 		setPlayers(usr)
-		setUsers(users.filter((entry) => entry._id !== user.id))
+		setUsers(users.filter((entry) => entry._id !== user._id))
 	}
 
 	const playertoUser = (user) => {
@@ -106,10 +124,14 @@ const Scene = (props) => {
 	}
 
 	useEffect(() => {
-		getPlayers()
+		//in the beginning load the scene
 		getScene()
-		console.log(id)
 	}, [])
+
+	useEffect(() => {
+		getPlayers()
+		console.log("players changed", players)
+	}, [players])
 
 	const newBody = () => {
 		const container = { ...scene }

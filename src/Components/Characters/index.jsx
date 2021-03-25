@@ -1,121 +1,96 @@
 /**
  * feture list:
  * list characters
- * create a character
- * edit a character
+ * create a scene
+ * edit a scene
+ * add players to a scene
+ * add characters to the scene may need a player character list component
  */
 import { useState, useEffect } from "react"
-import { useDropzone } from "react-dropzone"
-import createDataUri from "create-data-uri"
-import ab2str from "arraybuffer-to-string"
-const Characters = () => {
-	const [save, setSave] = useState(false)
-	const [name, setName] = useState("")
-	const [bio, setBio] = useState("")
-	const [file, setFile] = useState([])
-	const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
-		accept: "image/*",
-		onDrop: (acceptedFiles) => {
-			setFile(
-				Object.assign(acceptedFiles[0], {
-					preview: URL.createObjectURL(acceptedFiles[0]),
-				})
-				/*acceptedFiles.map((file) =>
-					Object.assign(file, {
-						preview: URL.createObjectURL(file),
-					})
-				)*/
+import Element from "../element"
+const Scenes = () => {
+	const [characters, setCharacters] = useState([])
+	const [reload, setReload] = useState(false)
+	const getElements = async () => {
+		let response = await fetch(
+			`${process.env.REACT_APP_BACKEND}/users/my-chars`,
+			{
+				method: "GET",
+				credentials: "include",
+				headers: new Headers({
+					"Content-Type": "application/json",
+				}),
+			}
+		)
+		response = await response.json()
+		setCharacters([...response])
+		console.log("characters", characters)
+	}
+
+	const createElement = async (entry) => {
+		console.log(
+			"********************************************************************************"
+		)
+		console.log("entry ", entry)
+		try {
+			if (entry.file.length === 0) {
+				throw new Error("character picture is mandatory")
+			}
+			let id = await fetch(
+				`${process.env.REACT_APP_BACKEND}/characters/${
+					entry._id ? entry._id : ""
+				}`,
+				{
+					method: `${entry._id ? "PUT" : "POST"}`,
+					credentials: "include",
+					body: JSON.stringify({ name: entry.name, dsc: entry.dsc }),
+					headers: new Headers({
+						"Content-Type": "application/json",
+					}),
+				}
 			)
-		},
-	})
-	const files = acceptedFiles.map((file) => (
-		<li key={file.path}>{file.path}</li>
-	))
-	useEffect(
-		() => () => {
-			// Make sure to revoke the data uris to avoid memory leaks
-			URL.revokeObjectURL(file.preview)
-		},
-		[file]
-	)
-
-	useEffect(async () => {
-		if (acceptedFiles.length === 0) {
-			console.log("character picture is mandatory")
-			return
+			id = entry._id ? entry._id : await id.json()
+			console.log(id)
+			const formData = new FormData()
+			formData.append("image", entry.file, entry.file.name)
+			let response = await fetch(
+				`${process.env.REACT_APP_BACKEND}/characters/imageUpload/${id}`,
+				{
+					method: "POST",
+					credentials: "include",
+					body: formData,
+					headers: new Headers({}),
+				}
+			)
+			console.log("response", response)
+			setReload(!reload)
+		} catch (error) {
+			console.log(error)
 		}
-		let id = await fetch(`${process.env.REACT_APP_BACKEND}/characters/`, {
-			method: "POST",
-			credentials: "include",
-			body: JSON.stringify({ name, bio }),
-			headers: new Headers({
-				"Content-Type": "application/json",
-			}),
-		})
-		id = await id.json()
-		console.log(id)
-		const formData = new FormData()
-		formData.append("image", file, file.name)
-		fetch(`${process.env.REACT_APP_BACKEND}/characters/imageUpload/${id}`, {
-			method: "POST",
-			credentials: "include",
-			body: formData,
-			headers: new Headers({}),
-		})
-	}, [save])
-	return (
-		<div className="h-screen flex flex-col">
-			<div className="bg-red-800 p-1 m-2 mb-0">menu area</div>
-			<div className="flex-grow bg-blue-500 border-solid border-4 border-light-blue-500 mx-2 overflow-y-hidden">
-				<form
-					className=" w-max flex flex-row p-2 border-solid border-2 rounded-md border-black h-36"
-					onSubmit={(e) => {
-						e.preventDefault()
-						setSave(!save)
-					}}
-				>
-					<span
-						{...getRootProps({ className: "dropzone" })}
-						className="mr-2 h-full w-1/4"
-					>
-						<img
-							src={acceptedFiles.length ? file.preview : "character.png"}
-							className="object-scale-down h-32 "
-						></img>
-						<input {...getInputProps()} />
-					</span>
-					<span className="flex flex-col">
-						<aside className="flex flex-row p-1 pt-0">
-							<ul className="flex-grow">{/*files*/}</ul>
-							<button name="Save" type="submit" className="ml-2">
-								SAVE
-							</button>
-						</aside>
-						<div className="flex-grow pb-1">
-							<textarea
-								rows="2"
-								placeholder="Description"
-								className="resize-none w-full"
-								value={bio}
-								onChange={(e) => {
-									setBio(e.target.value)
-								}}
-							></textarea>
-						</div>
+	}
 
-						<input
-							placeholder=" character name"
-							className="pt-1"
-							value={name}
-							onChange={(e) => {
-								setName(e.target.value)
-							}}
-						></input>
-					</span>
-				</form>
+	useEffect(() => {
+		getElements()
+	}, [])
+
+	useEffect(() => {
+		getElements()
+	}, [reload])
+	return (
+		<div className="flex flex-col">
+			<div className="flex justify-center my-5 bg-yellow-500 p-1">
+				<div>
+					<p className=" text-center">NEW CHARACTER</p>
+					<Element save={createElement} />
+				</div>
+			</div>
+			<div className="grid gap-1  grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 justify-items-center">
+				{characters.map((scene, index) => (
+					<Element entry={scene} key={`scene-${index}`} save={createElement} />
+				))}
 			</div>
 		</div>
 	)
 }
 
-export default Characters
+export default Scenes
