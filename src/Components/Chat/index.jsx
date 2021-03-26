@@ -3,28 +3,6 @@ import { useParams } from "react-router-dom"
 import io from "socket.io-client"
 const connOptions = {
 	transports: ["websocket", "polling"],
-	//auth: {
-	//	token: "abc",
-	//}, // socket connectin options
-}
-
-const user = {
-	name: "alphaTester",
-	socketid: "Dgg3AUDUMEEMORk-AAAc",
-	_id: "18",
-	imageUrl: "https://placekitten.com/100/100",
-	characters: [
-		{
-			_id: "01",
-			name: "jake of the pecking albatros",
-			imageUrl: "https://placekitten.com/100/100",
-		},
-		{
-			_id: "02",
-			name: "steven of the treacherous seagul",
-			imageUrl: "https://placekitten.com/100/100",
-		},
-	],
 }
 
 let socket = io(process.env.REACT_APP_BACKEND, connOptions) //socket instance
@@ -52,31 +30,43 @@ const Chat = () => {
 			}
 		)
 		response = await response.json()
-		console.log("scene fetched", response)
+
 		setUser(
 			response.members.find(
 				(member) => member._id === localStorage.getItem("id")
 			)
 		)
-		console.log("ZZZZme", user, localStorage.getItem("id"))
+
+		setIdentity(
+			response.members.find(
+				(member) => member._id === localStorage.getItem("id")
+			)
+		)
+
+		response.members = response.members.filter(
+			(member) => member._id !== localStorage.getItem("id")
+		)
 		setScene({ ...response })
+
+		socket.emit("room", response)
 	}
 
 	useEffect(() => {
+		socket.on("connect", () => {
+			console.log("connected to socket ", socket.id)
+		})
+		socket.on("message", (message) => {
+			console.log("message incoming", message)
+			setMessages((messages) => messages.concat(message))
+		})
 		getScene()
 	}, [])
+
+	useEffect(() => {})
 
 	useEffect(() => {
 		console.log("this should connect to the backend")
 		console.log("scene saved", scene)
-		socket.on("message", (message) =>
-			setMessages((messages) => messages.concat(message))
-		)
-		socket.on("connect", () => {
-			socket.emit("room", scene)
-			console.log("connected to socket ", socket.id)
-		}) //check if socket is connected
-		return () => socket.removeAllListeners() //componentWillUnmount
 	}, [scene])
 
 	const toggleCharacterInRecipients = (character) => {
@@ -122,9 +112,12 @@ const Chat = () => {
 		if (send) {
 			console.log("this should send a message")
 			socket.emit("sendMessage", {
-				room: scene.name,
-				username: "me",
+				room: scene._id,
+				user: user,
 				message: input,
+				toPlayers: recipientPlayers,
+				toCharacters: recipientCharacters,
+				as: identity,
 			})
 			console.log("if you are reading this emit did not cause a crash")
 			setSend(!send)

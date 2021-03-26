@@ -15,18 +15,22 @@ const Login = () => {
 			console.log("password:", password)
 			console.log("here goeas the fetch, in theory at least")
 			//const body = { email, password }
-			let me = await fetch(`${process.env.REACT_APP_BACKEND}/users/login`, {
-				method: "POST",
-				credentials: "include",
-				body: JSON.stringify({ email, password }),
-				headers: new Headers({
-					"Content-Type": "application/json",
-				}),
-			})
-			me = await me.json()
-			console.log(me)
-			localStorage.setItem("id", me)
-			history.push("/scenes")
+			try {
+				let me = await fetch(`${process.env.REACT_APP_BACKEND}/users/login`, {
+					method: "POST",
+					credentials: "include",
+					body: JSON.stringify({ email, password }),
+					headers: new Headers({
+						"Content-Type": "application/json",
+					}),
+				})
+				me = await me.json()
+				console.log(me)
+				localStorage.setItem("id", me.id)
+				history.push("/scenes")
+			} catch (error) {
+				console.log(error)
+			}
 		},
 		[send]
 	)
