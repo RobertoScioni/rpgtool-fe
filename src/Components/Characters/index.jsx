@@ -8,12 +8,14 @@
  */
 import { useState, useEffect } from "react"
 import Element from "../element"
-const Scenes = () => {
+const Scenes = (props) => {
 	const [characters, setCharacters] = useState([])
 	const [reload, setReload] = useState(false)
+	const id = props._id ? props._id : localStorage.getItem("id")
 	const getElements = async () => {
+		console.log("###id", id)
 		let response = await fetch(
-			`${process.env.REACT_APP_BACKEND}/users/my-chars`,
+			`${process.env.REACT_APP_BACKEND}/characters/byUser/${id}`,
 			{
 				method: "GET",
 				credentials: "include",
@@ -69,7 +71,8 @@ const Scenes = () => {
 		}
 	}
 
-	useEffect(() => {
+	useEffect((props) => {
+		console.log(props ? props.params._id : localStorage.getItem("id"))
 		getElements()
 	}, [])
 
