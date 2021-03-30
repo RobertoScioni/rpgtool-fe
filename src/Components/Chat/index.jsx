@@ -107,6 +107,7 @@ const Chat = () => {
 			setMessages((messages) => messages.concat(message))
 		})
 		getScene()
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
 	useEffect(() => {})
@@ -182,6 +183,7 @@ const Chat = () => {
 			setSend(!send)
 			//console.log(socket)
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [send])
 	useEffect(() => {
 		console.log("messages", messages)
@@ -256,7 +258,7 @@ const Chat = () => {
 								<img
 									src={character.imageUrl}
 									key={`myChar-${character._id}`}
-									className="m-1"
+									alt={character.name}
 									title={character.name}
 									onClick={(e) => {
 										impersonate(character)
@@ -275,6 +277,7 @@ const Chat = () => {
 									"https://res.cloudinary.com/ratanax/image/upload/v1616546238/rpgTool/scenes/ttlrrin7qj3visuxtxyh.jpg"
 								}
 								title={user.name}
+								alt={user.name}
 								className={
 									identity._id === user._id
 										? "w-20 h-20 m-3 rounded-full ring-4 ring-green-400 object-scale-down bg-gray-500 "

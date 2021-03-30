@@ -11,7 +11,7 @@ import Scene from "./Components/Scenes/scene"
 import Campaigns from "./Components/Campaigns"
 import Campaign from "./Components/Campaigns/Campaign"
 import Characters from "./Components/Characters"
-import NavBar from "./Components/Navbar"
+//import NavBar from "./Components/Navbar"
 import Dashboard from "./Components/Dashboard"
 
 console.log("backend at", process.env.REACT_APP_BACKEND)

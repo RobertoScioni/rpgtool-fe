@@ -120,11 +120,13 @@ const Campaigns = () => {
 	useEffect(() => {
 		getMe()
 		getElements()
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
 	useEffect(() => {
 		getMe()
 		getElements()
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [reload])
 	return (
 		<div className="bg-gray-900 h-full ">
