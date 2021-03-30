@@ -11,15 +11,17 @@ const CharacterSheet = (props) => {
 		//component did mount
 		console.log("character sheet props", props)
 		setPages(props.sheet)
-		setPage(Object.keys(props.sheet)[0])
+		if (page === "") setPage(Object.keys(props.sheet)[0])
 	}, [props])
 	return (
 		<div className="flex flex-col">
-			<div id="pageSelector" className="flex">
+			<div id="pageSelector" className="flex border-b-4 ">
 				{Object.keys(props.sheet).map((pageName) => (
 					<div
 						key={pageName}
-						className={`bg-gray-500 p-2 m-1 rounded-md`}
+						className={`mx-0.5 mb-0 rounded-t-md ${
+							pageName !== page ? "bg-gray-500" : "bg-gray-100 text-gray-900"
+						}`}
 						onClick={() => setPage(pageName)}
 					>
 						{pageName}

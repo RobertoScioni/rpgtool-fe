@@ -146,13 +146,9 @@ const Campaigns = () => {
 					>
 						<Element entry={me} save={saveMe} edit={true} />
 					</div>
-					<p className=" text-yellow-500 bold">Campaign Manager</p>
+					<p className=" text-yellow-500 bold">My Campaigns Manager</p>
 				</div>
 
-				<div>
-					<p className=" text-center">NEW CAMPAIGN</p>
-					<Element save={createElement} />
-				</div>
 				<div className="p-2">
 					<a className=" self-end" href="/Characters">
 						<svg
@@ -174,9 +170,14 @@ const Campaigns = () => {
 			</div>
 
 			<div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 justify-items-center">
+				<div className="flex ring-2 ring-yellow-500 p-2 rounded-md bg-gray-700">
+					<Element save={createElement} placeholder="New Campaign" />
+					<div className="w-10"></div>
+				</div>
+
 				{campaigns.map((campaign, index) => (
 					<div
-						className="flex ring-2 ring-yellow-500 p-2 rounded-md w-min"
+						className="flex ring-2 ring-yellow-500 p-2 rounded-md w-min bg-gray-700"
 						key={`campaign-${index}`}
 					>
 						<Element entry={campaign} save={createElement} />

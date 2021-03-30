@@ -49,7 +49,7 @@ const Element = (props) => {
 			<span
 				{...getRootProps({
 					className:
-						"dropzone mr-2 h-full w-1/2 overflow-y-hidden flex justify-center align-center bg-gray-500 rounded-md",
+						"dropzone mr-2 h-full w-1/2 overflow-y-hidden flex justify-center align-center bg-gray-500 rounded-md ring-1 ring-gray-50",
 				})}
 			>
 				<img
@@ -62,8 +62,8 @@ const Element = (props) => {
 			<span className="flex flex-col">
 				<div className="flex">
 					<input
-						placeholder="name"
-						className="mb-2 w-full"
+						placeholder={props.placeholder ? props.placeholder : "name"}
+						className="mb-2 w-full rounded-sm p-0.5 ring-1 ring-gray-50"
 						value={name}
 						onChange={(e) => {
 							setName(e.target.value)
@@ -72,7 +72,7 @@ const Element = (props) => {
 					></input>
 
 					<button
-						className="h-8 w-8 m2 align-top"
+						className="h-8 w-8 m2 align-top "
 						onClick={(e) => {
 							if (edit) {
 								props.save({
@@ -123,7 +123,7 @@ const Element = (props) => {
 
 				<textarea
 					placeholder="Description"
-					className="resize-none flex-grow w-full self-end"
+					className="resize-none flex-grow w-full self-end rounded-sm p-0.5 ring-1 ring-gray-50"
 					value={dsc}
 					onChange={(e) => {
 						setDsc(e.target.value)

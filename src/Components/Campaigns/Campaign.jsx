@@ -8,6 +8,7 @@ const Campaign = (props) => {
 	const [campaign, setCampaign] = useState({})
 	const [players, setPlayers] = useState([])
 	const [characters, setCharacters] = useState([])
+	const [filter, setFilter] = useState("")
 
 	const getPlayers = async () => {
 		let response = await fetch(`${process.env.REACT_APP_BACKEND}/users/`, {
@@ -165,15 +166,21 @@ const Campaign = (props) => {
 	})
 
 	return (
-		<div className="flex flex-col w-full min-h-full bg-green-500">
-			<div className="flex flex-row h-20 bg-red-100">
-				<img
-					src={campaign.imageUrl || "character.png"}
-					className="object-scale-down max-w-full max-h-full p-2"
-					alt="avatar"
-				></img>
-				<div>{campaign.name}</div>
-				<div>{campaign.description}</div>
+		<div className="flex flex-col w-screen min-h-full ">
+			<div className="flex flex-row items-center h-20 p-2 bg-gray-500">
+				<div className="flex justify-content-center align-center bg-gray-300 mr-2">
+					<img
+						src={campaign.imageUrl || "character.png"}
+						className="object-scale-down w-20 p-2"
+						alt="avatar"
+					></img>
+				</div>
+				<div>
+					<div className="w-max font-bold">
+						Players and Characters manager for:
+					</div>
+					<div>{campaign.name}</div>
+				</div>
 				<div id="save" className="ml-1" onClick={(e) => save()}>
 					<svg
 						class="h-10 w-10 text-green-600"
@@ -189,21 +196,7 @@ const Campaign = (props) => {
 						<polyline points="7 3 7 8 15 8" />
 					</svg>
 				</div>
-				<Link id="close" className="ml-1" to="/campaigns">
-					<svg
-						class="h-10 w-10 text-red-600"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M6 18L18 6M6 6l12 12"
-						/>
-					</svg>
-				</Link>
+
 				<Link id="open" className="ml-1" to={`/chat/${id}`}>
 					<svg
 						class="h-10 w-10 text-green-600"
@@ -217,8 +210,14 @@ const Campaign = (props) => {
 						<polygon points="5 3 19 12 5 21 5 3" />
 					</svg>
 				</Link>
+
+				<div className=" text-right w-full">
+					<a href="/Campaigns" className=" text-yellow-500 bold">
+						back to:My Campaigns Manager
+					</a>
+				</div>
 			</div>
-			<div className="h-20 flex w-full">
+			<div className="h-24 flex w-full items-center">
 				{players.map((element, index) => (
 					<div className="relative" key={`player-${index}`}>
 						<MicroElement entry={element} action={playertoUser} />
@@ -238,7 +237,10 @@ const Campaign = (props) => {
 						</div>
 					</div>
 				))}
-				<div className="flex-grow"></div>
+				<div className="flex-grow text-center text-gray-300 font-bold">
+					{" "}
+					PLAYERS{" "}
+				</div>
 				{users.map((element, index) => (
 					<MicroElement
 						entry={element}
@@ -247,39 +249,56 @@ const Campaign = (props) => {
 					/>
 				))}
 			</div>
-			<div className="bg-blue-900"> FILTERS</div>
-			<div className="bg-pink-900 flex-grow grid grid-cols-5">
+			<div className="flex justify-center mt-2 text-gray-300 font-bold">
+				CHARACTERS
+			</div>
+			<div className="flex justify-center mb-2">
+				<input
+					type="text"
+					placeholder="search characters by name"
+					value={filter}
+					className="p-1"
+					onChange={(e) => setFilter(e.target.value)}
+				/>
+			</div>
+			<div className="flex-grow grid grid-cols-12 gap-1">
 				{players.map(
 					(player) =>
 						player.characters &&
-						player.characters.map((character, index) => {
-							const selected = characters.includes(character._id)
-							const action = selected ? removeCharacter : addCharacter
-							return (
-								<div className="relative w-16">
-									<MicroElement
-										entry={character}
-										key={`character-${index}`}
-										action={action}
-									/>
-									{selected && (
-										<div className="absolute top-0 right-0 rounded-full bg-gray-500 p-1">
-											<svg
-												className="h-5 w-5 text-green-300"
-												viewBox="0 0 24 24"
-												fill="none"
-												stroke="currentColor"
-												strokeWidth="2"
-												strokeLinecap="round"
-												strokeLinejoin="round"
-											>
-												<polyline points="20 6 9 17 4 12" />
-											</svg>
-										</div>
-									)}
-								</div>
-							)
-						})
+						player.characters
+							.filter((element) => {
+								if (filter === "") return true
+								if (element.name.includes(filter)) return true
+								return false
+							})
+							.map((character, index) => {
+								const selected = characters.includes(character._id)
+								const action = selected ? removeCharacter : addCharacter
+								return (
+									<div className="relative w-16">
+										<MicroElement
+											entry={character}
+											key={`character-${index}`}
+											action={action}
+										/>
+										{selected && (
+											<div className="absolute top-0 right-0 rounded-full bg-gray-500 p-1">
+												<svg
+													className="h-5 w-5 text-green-300"
+													viewBox="0 0 24 24"
+													fill="none"
+													stroke="currentColor"
+													strokeWidth="2"
+													strokeLinecap="round"
+													strokeLinejoin="round"
+												>
+													<polyline points="20 6 9 17 4 12" />
+												</svg>
+											</div>
+										)}
+									</div>
+								)
+							})
 				)}
 			</div>
 		</div>

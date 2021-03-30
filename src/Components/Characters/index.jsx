@@ -155,13 +155,9 @@ const Scenes = (props) => {
 					>
 						<Element entry={me} save={saveMe} edit={true} />
 					</div>
-					<p className=" text-yellow-500 bold">Character Manager</p>
+					<p className=" text-yellow-500 bold">My Characters Manager</p>
 				</div>
 
-				<div>
-					<p className=" text-center">NEW CHARACTER</p>
-					<Element save={createElement} />
-				</div>
 				<div className="p-2">
 					<a className=" self-end" href="/Campaigns">
 						<svg
@@ -182,12 +178,17 @@ const Scenes = (props) => {
 				</div>
 			</div>
 			<div className="grid gap-4  grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 justify-items-center">
+				<div className="flex ring-2 ring-yellow-500 p-2 rounded-md bg-gray-700">
+					<Element save={createElement} placeholder="New Character" />
+					<div className="w-10"></div>
+				</div>
 				{characters.map((scene, index) => (
 					<div
-						className="flex ring-2 ring-yellow-500 p-2 rounded-md w-min"
+						className="flex ring-2 ring-yellow-500 p-2 rounded-md w-min bg-gray-700"
 						key={`scene-${index}`}
 					>
 						<Element entry={scene} save={createElement} />
+						<div className="w-10"></div>
 					</div>
 				))}
 			</div>
