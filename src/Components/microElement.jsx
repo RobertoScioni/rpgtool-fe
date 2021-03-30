@@ -1,12 +1,12 @@
 const MicroElement = (props) => {
 	return (
 		<div
-			className="h-20 w-20 relative bg-gray-400 m-1 text-indigo-200 bold text-center cursor-pointer"
+			className="h-20 w-20 relative bg-gray-400 m-1 text-indigo-200 ring-1 ring-gray-100 rounded-sm bold text-center cursor-pointer overflow-clip"
 			onClick={(e) => {
 				if (props.action) props.action(props.entry)
 			}}
 		>
-			<div className="h-20 w-20 relative bg-gray-400 flex justify-items-center align-middle">
+			<div className="h-20 w-20 relative bg-gray-400 flex justify-center items-center">
 				<img
 					src={
 						props.entry.imageUrl ||
@@ -16,7 +16,7 @@ const MicroElement = (props) => {
 					alt="avatar"
 				></img>
 			</div>
-			<div className="absolute inset-x-0 min-w-full min-h-full mx-auto mx-auto -mt-12">
+			<div className="absolute inset-x-0 mx-auto -mt-12">
 				{props.entry.name}
 			</div>
 		</div>

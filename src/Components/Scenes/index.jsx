@@ -98,15 +98,32 @@ const Scenes = () => {
 	}, [reload])
 	return (
 		<div>
-			<div className="flex justify-center my-5 bg-yellow-500 p-1">
+			<div className="flex flex-row items-center h-20 p-2 bg-gray-500 mb-5">
+				<div className="flex justify-content-center align-center bg-gray-300 mr-2">
+					<img
+						src={campaign.imageUrl || "character.png"}
+						className="object-scale-down w-20 p-2"
+						alt="avatar"
+					></img>
+				</div>
 				<div>
-					<p className=" text-center">NEW SCENE</p>
-					<Element save={createElement} />
+					<div className="w-max font-bold">Scene manager for:</div>
+					<div>{campaign.name}</div>
+				</div>
+				<div className=" text-right w-full">
+					<a href="/Campaigns" className=" text-yellow-500 bold">
+						back to:My Campaigns Manager
+					</a>
 				</div>
 			</div>
-			<div className="grid gap-1  grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 justify-items-center">
+
+			<div className="grid   grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 justify-items-center gap-1">
+				<div className="flex ring-2 ring-yellow-500 p-2 rounded-md bg-gray-700">
+					<Element save={createElement} placeholder="New Scene" />
+					<div className="w-10"></div>
+				</div>
 				{scenes.map((scene, index) => (
-					<div className="flex bg-yellow-500 w-min p-1">
+					<div className="flex ring-2 ring-yellow-500 p-2 rounded-md bg-gray-700">
 						<Element
 							entry={scene}
 							key={`scene-${index}`}

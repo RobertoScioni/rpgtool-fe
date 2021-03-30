@@ -6,7 +6,7 @@ const Message = (props) => {
 	let wisper = element.toCharacters.length !== 0
 	return (
 		<div
-			className={`m-1 p-2  flex border-black flex-col ${
+			className={`m-1 p-2  flex border-black flex-col w-3/5 ${
 				mine ? "self-end" : "self-start"
 			} ${ooc ? "rounded-xl bg-indigo-100 " : "bg-blue-300 border-2"} ${
 				pm ? "border-dashed border-red-700 border-4" : ""
@@ -28,8 +28,8 @@ const Message = (props) => {
 			<div
 				className={
 					mine
-						? "flex flex-row-reverse text-right max-w1/2"
-						: "flex flex-row w-min max-w1/2"
+						? "flex flex-row-reverse text-right max-w-3/4"
+						: "flex flex-row w-min max-w-3/4"
 				}
 			>
 				<div className={`w-20 ${ooc ? "rounded-full" : ""}`}>
@@ -45,7 +45,7 @@ const Message = (props) => {
 					/>
 				</div>
 
-				<div className="w-32 overflow-ellipsis break-words px-1 cursor-default">
+				<div className="overflow-ellipsis break-words px-1 cursor-default ">
 					<div>
 						{element.splitted.map((fragment) => (
 							<span
