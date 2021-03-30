@@ -1,3 +1,10 @@
+top level is reserved for _id and pages
+
+the key of a page is it's name
+the value of a page is an array
+the element of the array will be parsed as buttons if they are object
+if they are integer they will create counters
+
 {
 	"_id": "",
 	"Skills": [

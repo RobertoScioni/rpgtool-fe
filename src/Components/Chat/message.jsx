@@ -47,12 +47,13 @@ const Message = (props) => {
 
 				<div className="overflow-ellipsis break-words px-1 cursor-default ">
 					<div>
-						{element.splitted.map((fragment) => (
+						{element.splitted.map((fragment, index) => (
 							<span
 								className={`${
 									element.rollMap[fragment] ? "font-bold mx-1" : ""
 								}`}
 								title={element.rollMap[fragment] ? fragment : ""}
+								key={index}
 							>
 								{element.rollMap[fragment] || fragment}
 							</span>
