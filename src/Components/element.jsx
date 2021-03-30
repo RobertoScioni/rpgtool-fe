@@ -54,6 +54,7 @@ const Element = (props) => {
 			>
 				<img
 					src={acceptedFiles.length ? file.preview : imgURL}
+					alt="element"
 					className="object-scale-down "
 				></img>
 				<input {...getInputProps()} disabled={!edit} />
