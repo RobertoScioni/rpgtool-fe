@@ -1,6 +1,5 @@
 import Element from "../element"
 const Dashboard = () => {
-	const index = 1
 	return (
 		<div className="flex">
 			<div>
