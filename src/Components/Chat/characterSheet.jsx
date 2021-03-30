@@ -33,12 +33,12 @@ const CharacterSheet = (props) => {
 	}, [props, page])
 	return (
 		<div className="flex flex-col h-full">
-			<div id="pageSelector" className="flex border-b-4 ">
+			<div id="pageSelector" className="flex border-b-4">
 				{Object.keys(props.sheet.Pages).map((pageName) => (
 					<div
 						key={pageName}
-						className={`mx-0.5 mb-0 rounded-t-md ${
-							pageName !== page ? "bg-gray-500" : "bg-gray-100 text-gray-900"
+						className={`mr-1 px-1 mt-2 mb-0 rounded-t-md ${
+							pageName !== page ? "bg-gray-500" : "bg-gray-300 text-gray-900"
 						}`}
 						onClick={() => setPage(pageName)}
 					>
@@ -50,15 +50,15 @@ const CharacterSheet = (props) => {
 					counters.map((counter, index) => (
 						<div
 							key={counter.name}
-							className="flex mx-1 ring-2 bg-green-500"
+							className="flex ml-2 my-1 ring-2 bg-green-500"
 							title={counter.name}
 						>
-							<p className="font-bold">{counter.abbreviation}</p>
+							<p className="font-bold pr-1">{counter.abbreviation}</p>
 							<input
 								type="number"
 								min={counter.min}
 								max={counter.max}
-								className="w-8 text-gray-900 bg-gray-200"
+								className="w-8 text-gray-900 bg-gray-200 text-center"
 								value={counters[index].value}
 								onChange={(e) => handleCounter(index, e.target.value)}
 							></input>{" "}

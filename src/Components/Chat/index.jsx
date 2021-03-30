@@ -383,7 +383,15 @@ const Chat = () => {
 				}`}
 			>
 				{sheet ? (
-					<CharacterSheet sheet={test} send={quickRoll} />
+					identity.sheet ? (
+						<CharacterSheet sheet={identity.sheet} send={quickRoll} />
+					) : (
+						<div className=" h-full flex justify-center items-center">
+							<p className="font-bold text-red-700">
+								PLEASE SELECT A CHARACTER
+							</p>
+						</div>
+					)
 				) : (
 					<DiceRoller appendInput={appendInput} />
 				)}

@@ -82,6 +82,10 @@ const Element = (props) => {
 									_id: props.entry ? props.entry._id : undefined,
 								})
 								if (!props.entry) setFile([])
+								if (props.placeholder) {
+									setName("")
+									setDsc("")
+								}
 								setEdit(props.entry ? false : true)
 							} else {
 								setEdit(true)
