@@ -27,7 +27,7 @@ const Login = () => {
 				me = await me.json()
 				console.log(me)
 				localStorage.setItem("id", me.id)
-				history.push("/scenes")
+				history.push("/Campaigns")
 			} catch (error) {
 				console.log(error)
 			}
@@ -65,7 +65,7 @@ const Login = () => {
 					}}
 					className="m-1 p-2"
 				/>
-				<button type="submit" className="m-1 mx-auto p-2 w-min">
+				<button type="submit" className="m-1 mx-auto p-2 w-min text-green-500">
 					Login
 				</button>
 			</form>
