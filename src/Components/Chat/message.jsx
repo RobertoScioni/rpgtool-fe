@@ -13,8 +13,13 @@ const Message = (props) => {
 			}`}
 		>
 			<div className="font-bold underline mb-2">
+				{pm ? <b>PM: </b> : ""}
 				{element.sender.name}
-				{ooc ? "" : ` as ${element.as.name}`}
+				{ooc ? (
+					<span title="out of character"> ooc</span>
+				) : (
+					` as ${element.as.name}`
+				)}
 				{wisper
 					? " to: " +
 					  element.toCharacters.map((character) => `${character.name} `)
@@ -23,7 +28,7 @@ const Message = (props) => {
 			<div
 				className={
 					mine
-						? "flex flex-row-reverse text-right w-min max-w1/2"
+						? "flex flex-row-reverse text-right max-w1/2"
 						: "flex flex-row w-min max-w1/2"
 				}
 			>
@@ -40,7 +45,7 @@ const Message = (props) => {
 					/>
 				</div>
 
-				<div className="w-64 overflow-ellipsis break-words px-1 cursor-default">
+				<div className="w-32 overflow-ellipsis break-words px-1 cursor-default">
 					<div>
 						{element.splitted.map((fragment) => (
 							<span

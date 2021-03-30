@@ -28,39 +28,31 @@ ReactDOM.render(
 			<Route exact path="/register">
 				<Register />
 			</Route>
-			<Route exact path="/dashboard">
-				<Dashboard />
-			</Route>
 			<Route path="/chat/:id">
-				<NavBar />
 				<Chat />
 			</Route>
 			<Route exact path="/chat">
-				<NavBar />
 				<Chat />
 			</Route>
+			<Route exact path="/dashboard">
+				<Dashboard />
+			</Route>
 			<Route exact path="/campaigns">
-				<NavBar />
 				<Campaigns />
 			</Route>
 			<Route exact path="/campaign/:id">
-				<NavBar />
 				<Campaign />
 			</Route>
 			<Route exact path="/scenes">
-				<NavBar />
 				<Scenes />
 			</Route>
 			<Route exact path="/scenes/:id">
-				<NavBar />
 				<Scenes />
 			</Route>
 			<Route path="/scene/:id">
-				<NavBar />
 				<Scene />
 			</Route>
 			<Route exact path="/characters">
-				<NavBar />
 				<Characters />
 			</Route>
 		</React.StrictMode>

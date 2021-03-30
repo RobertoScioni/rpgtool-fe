@@ -11,7 +11,7 @@ import { useParams } from "react-router-dom"
 import Element from "../element"
 const Scenes = () => {
 	let { id } = useParams()
-	const [campaign, setCampaign] = useState([])
+	const [campaign, setCampaign] = useState({})
 	const [scenes, setScenes] = useState([])
 	const [reload, setReload] = useState(false)
 	const getElements = async () => {
@@ -40,7 +40,12 @@ const Scenes = () => {
 			if (entry.file.length === 0) {
 				throw new Error("character picture is mandatory")
 			}
-			let body = { name: entry.name, dsc: entry.dsc }
+			let body = {
+				name: entry.name,
+				dsc: entry.dsc,
+				campaign: id,
+				members: campaign.members,
+			}
 			if (!entry.id) body.members = [...campaign.members]
 			let _id = await fetch(
 				`${process.env.REACT_APP_BACKEND}/scenes/${entry._id ? entry._id : ""}`,
