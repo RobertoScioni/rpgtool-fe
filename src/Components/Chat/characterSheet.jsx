@@ -12,7 +12,7 @@ const CharacterSheet = (props) => {
 		console.log("character sheet props", props)
 		setPages(props.sheet)
 		if (page === "") setPage(Object.keys(props.sheet)[0])
-	}, [props])
+	}, [props, page])
 	return (
 		<div className="flex flex-col">
 			<div id="pageSelector" className="flex border-b-4 ">
