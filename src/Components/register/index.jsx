@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react"
 import { useHistory } from "react-router-dom"
 /* Stuff to do, theming and validation for the mail*/
 
-const Login = () => {
+const Register = () => {
 	const [email, setMail] = useState("")
 	/*i would really prefer a way to store the password less vulnerable to cross scripting, 
         if react dev tool can read the state so could a lot of other extensions*/
 	const [password, setPassword] = useState("")
+	const [name, setName] = useState("")
 	const [send, setSend] = useState(true)
 	let history = useHistory()
 
@@ -16,18 +17,21 @@ const Login = () => {
 			console.log("here goeas the fetch, in theory at least")
 			//const body = { email, password }
 			try {
-				let me = await fetch(`${process.env.REACT_APP_BACKEND}/users/login`, {
-					method: "POST",
-					credentials: "include",
-					body: JSON.stringify({ email, password }),
-					headers: new Headers({
-						"Content-Type": "application/json",
-					}),
-				})
+				let me = await fetch(
+					`${process.env.REACT_APP_BACKEND}/users/register`,
+					{
+						method: "POST",
+						credentials: "include",
+						body: JSON.stringify({ email, password, name }),
+						headers: new Headers({
+							"Content-Type": "application/json",
+						}),
+					}
+				)
 				me = await me.json()
 				console.log(me)
 				localStorage.setItem("id", me.id)
-				history.push("/scenes")
+				history.push("/login")
 			} catch (error) {
 				console.log(error)
 			}
@@ -55,6 +59,13 @@ const Login = () => {
 					className="m-1 p-2"
 				/>
 				<input
+					type="text"
+					placeholder="Name"
+					value={name}
+					onChange={(e) => setName(e.target.value)}
+					className="m-1 p-2"
+				/>
+				<input
 					type="password"
 					placeholder="password"
 					value={password}
@@ -65,11 +76,11 @@ const Login = () => {
 					className="m-1 p-2"
 				/>
 				<button type="submit" className="m-1 mx-auto p-2 w-min">
-					Login
+					Register
 				</button>
 			</form>
 		</div>
 	)
 }
 
-export default Login
+export default Register

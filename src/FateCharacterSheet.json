@@ -1,0 +1,29 @@
+{
+	"_id": "",
+	"Skills": [
+		{ "name": "", "macro": "[4df+4]" },
+		{ "name": "", "macro": "[4df+3]" },
+		{ "name": "", "macro": "[4df+3]" },
+		{ "name": "", "macro": "[4df+2]" },
+		{ "name": "", "macro": "[4df+2]" },
+		{ "name": "", "macro": "[4df+2]" },
+		{ "name": "", "macro": "[4df+1]" },
+		{ "name": "", "macro": "[4df+1]" },
+		{ "name": "", "macro": "[4df+1]" },
+		{ "name": "", "macro": "[4df+1]" }
+	],
+	"Aspects": [
+		{ "name": "", "desc": "" },
+		{ "name": "", "desc": "" },
+		{ "name": "", "desc": "" },
+		{ "name": "", "desc": "" },
+		{ "name": "", "desc": "" }
+	],
+	"Counters": {
+		"PhysicalStress": 2,
+		"MentalStress": 2,
+		"refresh": 3
+	},
+	"extras": [],
+	"Stunts": []
+}

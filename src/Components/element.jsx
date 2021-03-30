@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { useDropzone } from "react-dropzone"
 
 const Element = (props) => {
-	console.log("print the element", props.entry)
+	//console.log("print the element", props.entry)
 	const [edit, setEdit] = useState(true)
 	const [file, setFile] = useState([])
 	const [name, setName] = useState("")
@@ -34,11 +34,12 @@ const Element = (props) => {
 			setDsc(props.entry.dsc)
 			setURL(props.entry.imageUrl)
 		}
-	}, [])
+		if (props.edit) setEdit(true)
+	}, [props])
 
 	return (
 		<div
-			className="flex flex-row h-28 w-72 bg-yellow-500"
+			className="flex flex-row h-28 w-72"
 			onKeyDown={(e) => {
 				if (e.key === "Escape") {
 					setEdit(false)
@@ -48,12 +49,12 @@ const Element = (props) => {
 			<span
 				{...getRootProps({
 					className:
-						"dropzone mr-2 h-full w-1/2 overflow-y-hidden flex justify-center align-center bg-gray-500",
+						"dropzone mr-2 h-full w-1/2 overflow-y-hidden flex justify-center align-center bg-gray-500 rounded-md",
 				})}
 			>
 				<img
 					src={acceptedFiles.length ? file.preview : imgURL}
-					className="object-scale-down"
+					className="object-scale-down "
 				></img>
 				<input {...getInputProps()} disabled={!edit} />
 			</span>

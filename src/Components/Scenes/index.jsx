@@ -7,21 +7,27 @@
  * add characters to the scene may need a player character list component
  */
 import { useState, useEffect } from "react"
-import { useDropzone } from "react-dropzone"
+import { useParams } from "react-router-dom"
 import Element from "../element"
 const Scenes = () => {
+	let { id } = useParams()
+	const [campaign, setCampaign] = useState({})
 	const [scenes, setScenes] = useState([])
 	const [reload, setReload] = useState(false)
 	const getElements = async () => {
-		let response = await fetch(`${process.env.REACT_APP_BACKEND}/scenes/`, {
-			method: "GET",
-			credentials: "include",
-			headers: new Headers({
-				"Content-Type": "application/json",
-			}),
-		})
+		let response = await fetch(
+			`${process.env.REACT_APP_BACKEND}/campaigns/${id}`,
+			{
+				method: "GET",
+				credentials: "include",
+				headers: new Headers({
+					"Content-Type": "application/json",
+				}),
+			}
+		)
 		response = await response.json()
-		setScenes([...response])
+		setCampaign({ ...response })
+		setScenes([...response.scenes])
 		console.log("scenes", scenes)
 	}
 
@@ -34,23 +40,30 @@ const Scenes = () => {
 			if (entry.file.length === 0) {
 				throw new Error("character picture is mandatory")
 			}
-			let id = await fetch(
+			let body = {
+				name: entry.name,
+				dsc: entry.dsc,
+				campaign: id,
+				members: campaign.members,
+			}
+			if (!entry.id) body.members = [...campaign.members]
+			let _id = await fetch(
 				`${process.env.REACT_APP_BACKEND}/scenes/${entry._id ? entry._id : ""}`,
 				{
 					method: `${entry._id ? "PUT" : "POST"}`,
 					credentials: "include",
-					body: JSON.stringify({ name: entry.name, dsc: entry.dsc }),
+					body: JSON.stringify(body),
 					headers: new Headers({
 						"Content-Type": "application/json",
 					}),
 				}
 			)
-			id = entry._id ? entry._id : await id.json()
+			_id = entry._id ? entry._id : await _id.json()
 			console.log(id)
 			const formData = new FormData()
 			formData.append("image", entry.file, entry.file.name)
 			let response = await fetch(
-				`${process.env.REACT_APP_BACKEND}/scenes/imageUpload/${id}`,
+				`${process.env.REACT_APP_BACKEND}/scenes/imageUpload/${_id}`,
 				{
 					method: "POST",
 					credentials: "include",
@@ -59,6 +72,15 @@ const Scenes = () => {
 				}
 			)
 			console.log("response", response)
+			response = await fetch(
+				`${process.env.REACT_APP_BACKEND}/campaigns/${id}/addScene/${_id}`,
+				{
+					method: "POST",
+					credentials: "include",
+					//body: JSON.stringify({ scene: _id }),
+					headers: new Headers({}),
+				}
+			)
 			setReload(!reload)
 		} catch (error) {
 			console.log(error)
