@@ -58,6 +58,7 @@ const Scene = (props) => {
 			}
 		)
 		response = await response.json()
+		console.log(response)
 	}
 
 	const getScene = async () => {

@@ -58,6 +58,7 @@ const Campaign = (props) => {
 			}
 		)
 		response = await response.json()
+		console.log(response)
 	}
 
 	const getCampaign = async () => {

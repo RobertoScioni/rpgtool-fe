@@ -1,18 +1,7 @@
 import { useState } from "react"
 const DiceRoller = (props) => {
-	const [lastInput, setlastInput] = useState()
 	const [expression, setExpression] = useState("[]")
-	const [diceNumber, setNumber] = useState("")
-	const [diceSize, setSize] = useState("")
-	const [modifiers, setMod] = useState("")
 
-	const handleDice = (dice) => {
-		if (diceSize === dice) setNumber(Number(diceNumber) + 1)
-		else {
-			setSize(dice)
-			if (Number(diceNumber) === 0) setNumber(1)
-		}
-	}
 	const handleKeyboard = (key) => {
 		if (key === "AC") {
 			setExpression("[]")
