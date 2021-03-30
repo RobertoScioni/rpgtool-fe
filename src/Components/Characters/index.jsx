@@ -128,12 +128,14 @@ const Scenes = (props) => {
 			getMe()
 			getElements()
 		},
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[props]
 	)
 
 	useEffect(() => {
 		getMe()
 		getElements()
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [reload])
 	return (
 		<div className="flex flex-col pb-6">

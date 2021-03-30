@@ -107,6 +107,7 @@ const Chat = () => {
 			setMessages((messages) => messages.concat(message))
 		})
 		getScene()
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
 	useEffect(() => {})
@@ -182,6 +183,7 @@ const Chat = () => {
 			setSend(!send)
 			//console.log(socket)
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [send])
 	useEffect(() => {
 		console.log("messages", messages)

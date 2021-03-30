@@ -135,11 +135,13 @@ const Campaign = (props) => {
 	useEffect(() => {
 		//in the beginning load the campaign
 		getCampaign()
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
 	useEffect(() => {
 		getPlayers()
 		console.log("players changed", players)
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [players])
 
 	const newBody = () => {

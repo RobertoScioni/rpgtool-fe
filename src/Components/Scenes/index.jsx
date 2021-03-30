@@ -89,10 +89,12 @@ const Scenes = () => {
 
 	useEffect(() => {
 		getElements()
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
 	useEffect(() => {
 		getElements()
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [reload])
 	return (
 		<div>

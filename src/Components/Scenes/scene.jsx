@@ -127,11 +127,13 @@ const Scene = (props) => {
 	useEffect(() => {
 		//in the beginning load the scene
 		getScene()
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
 	useEffect(() => {
 		getPlayers()
 		console.log("players changed", players)
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [players])
 
 	const newBody = () => {
