@@ -76,7 +76,7 @@ const Register = () => {
 					}}
 					className="m-1 p-2"
 				/>
-				<button type="submit" className="m-1 mx-auto p-2 w-min">
+				<button type="submit" className="m-1 mx-auto p-2 w-min text-green-600">
 					Register
 				</button>
 			</form>
