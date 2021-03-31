@@ -14,9 +14,26 @@ const Scenes = (props) => {
 	const [reload, setReload] = useState(false)
 	const [me, setMe] = useState({})
 	const [editProfile, setEditProfile] = useState(false)
+	const [remove, setRemove] = useState("")
 	const id = props._id ? props._id : localStorage.getItem("id")
 
-	const del = (id) => {}
+	const del = async (_id) => {
+		let response = await fetch(
+			`${process.env.REACT_APP_BACKEND}/characters/${_id}`,
+			{
+				method: "DELETE",
+				credentials: "include",
+				headers: new Headers({
+					"Content-Type": "application/json",
+				}),
+			}
+		)
+		response = await response.body
+		console.log("###DELETE###")
+		console.log(response)
+		setRemove(false)
+		setReload(!reload)
+	}
 
 	const getMe = async () => {
 		let response = await fetch(`${process.env.REACT_APP_BACKEND}/users/me`, {
@@ -129,14 +146,15 @@ const Scenes = (props) => {
 			console.log(props ? props.params._id : localStorage.getItem("id"))
 			getMe()
 			getElements()
+			console.log("change in props")
 		},
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[props]
 	)
-
 	useEffect(() => {
 		getMe()
 		getElements()
+		console.log("reloading")
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [reload])
 	return (
@@ -191,7 +209,7 @@ const Scenes = (props) => {
 					>
 						<Element entry={scene} save={createElement} />
 						<div className="w-10 pl-2">
-							<button onClick={del(scene._id)}>
+							<button onClick={() => setRemove(scene._id)}>
 								<svg
 									className="h-8 w-8 text-gray-500 hover:text-red-700"
 									viewBox="0 0 24 24"
@@ -208,7 +226,40 @@ const Scenes = (props) => {
 									<line x1="14" y1="11" x2="14" y2="17" />
 								</svg>
 							</button>
-							<button className="h-8 w-8  hover:bg-green-700 rounded-md">
+							<div
+								className={`${
+									remove === scene._id
+										? "fixed top-0 left-0 h-screen w-screen bg-grey-500 flex justify-center items-center bg-opacity-60"
+										: "hidden"
+								} `}
+							>
+								<div
+									className={`bg-gray-900 w-5/6 h-20 rounded-lg p-2 flex flex-col`}
+								>
+									<div className="flex flex-row justify-between items-center border-t-2 border-b-2 border-yellow-400 mb-2 py-2">
+										<button
+											className="bg-green-800 py-1 px-10 rounded-lg hover:bg-green-500"
+											onClick={() => {
+												console.log("hey")
+												setRemove("")
+											}}
+										>
+											I CHANGED IDEA
+										</button>
+										<strong>Are you sure?</strong>
+										<button
+											className="bg-red-800 py-1 px-10 rounded-lg hover:bg-red-500"
+											onClick={() => del(scene._id)}
+										>
+											DELETE CHARACTER
+										</button>
+									</div>
+								</div>
+							</div>
+							<a
+								href={`/Character/${scene._id}`}
+								className="h-8 w-8  hover:bg-green-700 rounded-md"
+							>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
 									viewBox="0 0 512 512"
@@ -222,7 +273,7 @@ const Scenes = (props) => {
 										></path>
 									</g>
 								</svg>
-							</button>
+							</a>
 						</div>
 					</div>
 				))}

@@ -11,6 +11,7 @@ import Scene from "./Components/Scenes/scene"
 import Campaigns from "./Components/Campaigns"
 import Campaign from "./Components/Campaigns/Campaign"
 import Characters from "./Components/Characters"
+import Character from "./Components/Characters/editSheet"
 //import NavBar from "./Components/Navbar"
 import Dashboard from "./Components/Dashboard"
 
@@ -54,6 +55,9 @@ ReactDOM.render(
 			</Route>
 			<Route exact path="/characters">
 				<Characters />
+			</Route>
+			<Route exact path="/character/:characterId">
+				<Character />
 			</Route>
 		</React.StrictMode>
 	</BrowserRouter>,
