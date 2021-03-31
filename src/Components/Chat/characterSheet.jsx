@@ -21,8 +21,6 @@ const CharacterSheet = (props) => {
 		setPages(aux)
 	}
 
-	const dscBox = (dsc) => <div>{dsc}</div>
-
 	useEffect(() => {
 		//component did mount
 		//must cycle the Counters to prepare the state for them
