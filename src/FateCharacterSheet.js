@@ -1,4 +1,13 @@
-const test = {
+/*************
+ * Sample Sheet for Fate Core
+ */
+const Zird = {
+	/*********
+	 * Counters is reserved for frequently changing values
+	 * that will be visualized in the top right corner of the
+	 * character sheet and be accessible from all the pages
+	 */
+
 	Counters: [
 		{
 			name: "Physical Stress",
@@ -16,6 +25,17 @@ const test = {
 		},
 		{ name: "Fate Points", min: 0, value: 2, max: 2, abbreviation: "FP" },
 	],
+	/**********
+	 * Pages is a disctionary whose values are the content of the pages and whose keys are the name of the Pages
+	 *
+	 * content of a page is an array of object with at least a name field
+	 *
+	 * the presence of a macro field marks an entry as a macrobutton when pressed the macro will be sent to the chat
+	 * the presence of a value field marks an entry as an input field
+	 * a dsc field will have an action to show it's description in a modal
+	 * a min and/or max field will mark and entry as a counter field
+	 * an entry with only it's name will be printed as is and have no event attached
+	 */
 	Pages: {
 		Skills: [
 			{ name: "Lore", macro: "[4dF+4]" },
@@ -80,4 +100,23 @@ const test = {
 			},
 		],
 	},
+}
+
+/*********
+ * to do
+ * add support to variables in macros
+ * 		why?
+ * 			variables whould give the players the ability to define stuff like proficiency and ability modifiers
+ * 		how?
+ * 			variables will be declared in an object called variables and they will need to have simple values supported by rpg-dice-roller
+ * 			a field called Formulas will contain frequently used calculations that reference variables
+ * 			being able to simply parse them at rendering whould be optimal but most probably we will have to parse them when we store them
+ */
+
+const exampleWithVariables={
+	Variables: {str:18,dex:10,con:12,int:10,wis:12,cha:15,Proficiency:2,level:1},
+	Formulas:{mInt:"[floor((int-10)/2)]",mStr:"[floor((str-10)/2)]"}
+	Counters:{}
+	Pages:{},
+
 }
