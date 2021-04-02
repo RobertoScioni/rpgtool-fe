@@ -41,9 +41,9 @@ const Scene = (props) => {
 				"players characters before the filter",
 				JSON.stringify(player.characters)
 			)
-			player.characters = player.characters.filter((character) =>
-				characters.includes(character._id)
-			)
+			player.characters = player.characters
+				.filter((character) => characters.includes(character._id))
+				.map((player) => player._id)
 			return player
 		})
 
