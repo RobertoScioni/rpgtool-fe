@@ -31,6 +31,8 @@ const Chat = () => {
 	const [gm, setGm] = useState(false)
 	const [charactersPage, setCharactersPage] = useState("PC") //value can be pc or npc it's not a boolean for futureproofing
 	const [bottomTraySize, setBottomTraySize] = useState("h-2/5")
+	const [filter, setFilter] = useState("")
+	const [PMonly, setPMonly] = useState(false)
 
 	const getScene = async () => {
 		const URL = sceneId
@@ -186,14 +188,25 @@ const Chat = () => {
 	})
 	return (
 		<div className="flex flex-col h-full p-2 bg-gray-900">
-			<div className="sticky w-1/2 bg-gray-900 rounded-br-full text-yellow-400 pr-8 py-1 flex gap-2 items-center flex-wrap">
+			<div className="sticky bg-gray-900 rounded-br-full text-yellow-400 pr-8 py-1 flex gap-2 items-center flex-wrap">
 				<a href="/Campaigns">back</a>
 				<input
 					type="search"
+					value={filter}
+					onChange={(e) => setFilter(e.target.value)}
 					className="p-0.5 rounded-sm"
 					placeholder="search"
 				/>
-				<button className="text-white hover:text-red-500 px-2">PM only</button>
+				<button
+					className={`${
+						PMonly
+							? "text-red-500 hover:text-white px-2"
+							: "text-white hover:text-red-500 px-2"
+					}`}
+					onClick={() => setPMonly(!PMonly)}
+				>
+					PM only
+				</button>
 			</div>
 			<div
 				className={`border-light-blue-500 overflow-y-hidden bg-gray-600 ${
@@ -207,9 +220,19 @@ const Chat = () => {
 						ref={messageEl}
 					>
 						{messages.length > 0 &&
-							messages.map((element, index) => (
-								<Message element={element} key={`message-${index}`} />
-							))}
+							messages
+								.filter((message) => {
+									if (PMonly && !message.hasOwnProperty("toPlayers"))
+										return false
+									if (filter === "") return true
+									return message.splitted
+										.join()
+										.toLowerCase()
+										.includes(filter.toLowerCase())
+								})
+								.map((element, index) => (
+									<Message element={element} key={`message-${index}`} />
+								))}
 					</div>
 					<div
 						id="entitySelector"
@@ -293,19 +316,25 @@ const Chat = () => {
 						: "invisible h-0"
 				}`}
 			>
-				<button
-					onClick={() =>
-						setBottomTraySize(bottomTraySize === "h-2/5" ? "h-screen" : "h-2/5")
-					}
-					className={` w-full hover:bg-white hover:text-black ${
-						bottomTraySize === "h-2/5"
-							? "bg-white text-black"
-							: "bg-green-400 text-white"
-					}`}
-				>
-					{bottomTraySize === "h-2/5" ? "FULLSCREEN" : "REDUCE"}
-				</button>
-
+				<div className="flex">
+					<button
+						onClick={() =>
+							setBottomTraySize(
+								bottomTraySize === "h-2/5" ? "h-screen" : "h-2/5"
+							)
+						}
+						className={` hover:bg-white hover:text-black flex-grow ${
+							bottomTraySize === "h-2/5"
+								? "bg-white text-black"
+								: "bg-green-400 text-white"
+						}`}
+					>
+						{bottomTraySize === "h-2/5" ? "FULLSCREEN" : "REDUCE"}
+					</button>
+					{identity.sheet && (
+						<button onClick={() => setIdentity(user)}>close sheet</button>
+					)}
+				</div>
 				{sheet ? (
 					identity.sheet ? (
 						<CharacterSheet sheet={identity.sheet} send={quickRoll} />
