@@ -1,7 +1,11 @@
 import { useState, useEffect } from "react"
 import CharacterSheet from "../Chat/characterSheet"
-
+import MicroElement from "../microElement"
+import Element from "../element"
 const TemplateMaker = (props) => {
+	const [editProfile, setEditProfile] = useState(false)
+	const [reload, setReload] = useState(false)
+	const [me, setMe] = useState({})
 	const [TemplateName, setTemplateName] = useState()
 	const [sheet, setSheet] = useState({ Counters: [], Pages: [] })
 	const [pages, setPages] = useState({})
@@ -14,6 +18,43 @@ const TemplateMaker = (props) => {
 	const [counterAbbreviation, setCounterAbbreviation] = useState("")
 	const [min, setMin] = useState(0)
 	const [max, setMax] = useState(10)
+
+	const saveMe = async (entry) => {
+		console.log(
+			"********************************************************************************"
+		)
+		console.log("entry ", entry)
+		try {
+			let id = await fetch(`${process.env.REACT_APP_BACKEND}/users/me`, {
+				method: `PUT`,
+				credentials: "include",
+				body: JSON.stringify({
+					name: entry.name,
+					dsc: entry.dsc,
+				}),
+				headers: new Headers({
+					"Content-Type": "application/json",
+				}),
+			})
+			id = entry._id
+			console.log(id)
+			const formData = new FormData()
+			formData.append("image", entry.file, entry.file.name)
+			let response = await fetch(
+				`${process.env.REACT_APP_BACKEND}/users/imageUpload/me`,
+				{
+					method: "POST",
+					credentials: "include",
+					body: formData,
+					headers: new Headers({}),
+				}
+			)
+			console.log("response", response)
+			setReload(!reload)
+		} catch (error) {
+			console.log(error)
+		}
+	}
 
 	const appendCounter = () => {
 		const counter = {
@@ -101,6 +142,64 @@ const TemplateMaker = (props) => {
 
 	return (
 		<div className="p-4 h-screen">
+			<div className="flex justify-between mb-5 bg-gray-600 p-1 px-4">
+				<div className="flex">
+					<div
+						onClick={() => {
+							setEditProfile(!editProfile)
+						}}
+					>
+						<MicroElement entry={me} />
+					</div>
+					<div
+						className={`fixed top-24 shadow-md p-2 rounded-md bg-yellow-400 ${
+							!editProfile ? "hidden" : ""
+						}`}
+					>
+						<Element entry={me} save={saveMe} edit={true} />
+					</div>
+					<p className=" text-yellow-500 bold">Character Sheet maker</p>
+				</div>
+
+				<div className="p-2">
+					<div>
+						<a className=" self-end" href="/Campaigns">
+							<svg
+								className=" inline h-8 w-8 text-green-500"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									strokeWidth="2"
+									d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+								/>
+							</svg>
+							<span className=" text-green-500 bold">Manage Campaigns</span>
+						</a>
+					</div>
+					<div>
+						<a className=" self-end" href="/Characters">
+							<svg
+								className=" inline h-8 w-8 text-green-500"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									strokeWidth="2"
+									d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+								/>
+							</svg>
+							<span className=" text-green-500 bold">Manage Characters</span>
+						</a>
+					</div>
+				</div>
+			</div>
 			<div className="flex justify-between">
 				<input
 					type="text"

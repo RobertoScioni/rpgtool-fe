@@ -26,14 +26,14 @@ const Zird = {
 		{ name: "Fate Points", min: 0, value: 2, max: 2, abbreviation: "FP" },
 	],
 	/**********
-	 * Pages is a disctionary whose values are the content of the pages and whose keys are the name of the Pages
+	 * Pages is a dictionary whose values are the content of the pages and whose keys are the name of the Pages
 	 *
 	 * content of a page is an array of object with at least a name field
 	 *
 	 * the presence of a macro field marks an entry as a macrobutton when pressed the macro will be sent to the chat
 	 * the presence of a value field marks an entry as an input field
 	 * a dsc field will have an action to show it's description in a modal
-	 * a min and/or max field will mark and entry as a counter field
+	 * a min and/or max field will mark and entry as a counter field //must yet be implemented in pages
 	 * an entry with only it's name will be printed as is and have no event attached
 	 */
 	Pages: {
