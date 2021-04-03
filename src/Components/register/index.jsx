@@ -11,6 +11,29 @@ const Register = () => {
 	const [send, setSend] = useState(true)
 	let history = useHistory()
 
+	useEffect(() => {
+		const checklogin = async () => {
+			console.log("before the fech")
+			try {
+				let response = await fetch(`${process.env.REACT_APP_BACKEND}/users/`, {
+					method: "GET",
+					credentials: "include",
+					headers: new Headers({
+						"Content-Type": "application/json",
+					}),
+				})
+
+				if (response.status === 200) {
+					history.push("/campaigns")
+				} else console.log("not logged in")
+			} catch (error) {
+				console.log("not logged in", error)
+			}
+		}
+		console.log("component did mount")
+		checklogin()
+	}, [])
+
 	useEffect(
 		() => async () => {
 			console.log("password:", password)
