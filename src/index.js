@@ -12,6 +12,7 @@ import Campaigns from "./Components/Campaigns"
 import Campaign from "./Components/Campaigns/Campaign"
 import Characters from "./Components/Characters"
 import Character from "./Components/Characters/editSheet"
+import TemplateMaker from "./Components/TemplateMaker"
 //import NavBar from "./Components/Navbar"
 import Dashboard from "./Components/Dashboard"
 
@@ -29,14 +30,11 @@ ReactDOM.render(
 			<Route exact path="/register">
 				<Register />
 			</Route>
-			<Route path="/chat/:id">
+			<Route path="/chat/:id/:scene">
 				<Chat />
 			</Route>
-			<Route exact path="/chat">
+			<Route path="/chat/:id/">
 				<Chat />
-			</Route>
-			<Route exact path="/dashboard">
-				<Dashboard />
 			</Route>
 			<Route exact path="/campaigns">
 				<Campaigns />
@@ -50,7 +48,7 @@ ReactDOM.render(
 			<Route exact path="/scenes/:id">
 				<Scenes />
 			</Route>
-			<Route path="/scene/:id">
+			<Route path="/scene/:campaignId/:id">
 				<Scene />
 			</Route>
 			<Route exact path="/characters">
@@ -58,6 +56,9 @@ ReactDOM.render(
 			</Route>
 			<Route exact path="/character/:characterId">
 				<Character />
+			</Route>
+			<Route exact path="/templatemaker">
+				<TemplateMaker />
 			</Route>
 		</React.StrictMode>
 	</BrowserRouter>,

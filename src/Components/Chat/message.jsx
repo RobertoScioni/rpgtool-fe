@@ -50,12 +50,18 @@ const Message = (props) => {
 						{element.splitted.map((fragment, index) => (
 							<span
 								className={`${
-									element.rollMap[fragment] ? "font-bold mx-1" : ""
+									typeof element.rollMap[fragment] === "number"
+										? "font-bold mx-1"
+										: ""
 								}`}
-								title={element.rollMap[fragment] ? fragment : ""}
+								title={
+									typeof element.rollMap[fragment] === "number" ? fragment : ""
+								}
 								key={index}
 							>
-								{element.rollMap[fragment] || fragment}
+								{typeof element.rollMap[fragment] === "number"
+									? element.rollMap[fragment]
+									: fragment}
 							</span>
 						))}
 					</div>

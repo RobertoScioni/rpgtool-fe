@@ -13,8 +13,7 @@ console.log(connOptions)
 
 let socket = io(process.env.REACT_APP_BACKEND, connOptions) //socket instance
 const Chat = () => {
-	const { id } = useParams()
-	const { sceneId } = useParams()
+	const { id, sceneId } = useParams()
 	console.log("room id", id)
 	const [messages, setMessages] = useState([])
 	const messageEl = useRef(null)
@@ -251,7 +250,7 @@ const Chat = () => {
 
 						<div
 							id="separator"
-							className="border-solid border-t-4 w-full"
+							className="border-solid border-t-4 w-full flex-grow"
 						></div>
 						{user &&
 							user.characters &&

@@ -3,7 +3,8 @@ import { Link, useParams } from "react-router-dom"
 
 import MicroElement from "../microElement"
 const Scene = (props) => {
-	let { id } = useParams()
+	let { id, campaignId } = useParams()
+
 	const [users, setUsers] = useState([])
 	const [scene, setScene] = useState({})
 	const [players, setPlayers] = useState([])
@@ -79,8 +80,14 @@ const Scene = (props) => {
 		setCharacters(
 			[].concat.apply(
 				[],
-				response.members.map((player) =>
-					player.characters.map((character) => character._id)
+				response.members.map(
+					(player) =>
+						player.characters /* {
+					console.log("###-", JSON.stringify(player))
+					return player.characters
+						? player.characters.map((character) => character._id)
+						: ""
+				}*/
 				)
 			)
 		)
@@ -126,6 +133,8 @@ const Scene = (props) => {
 	}
 
 	useEffect(() => {
+		console.log("id:", id)
+		console.log("campaignId:", campaignId)
 		//in the beginning load the scene
 		getScene()
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -186,7 +195,7 @@ const Scene = (props) => {
 					</svg>
 				</div>
 
-				<Link id="open" className="ml-1" to={`/chat/${id}`}>
+				<Link id="open" className="ml-1" to={`/chat/${campaignId}/${id}`}>
 					<svg
 						className="h-10 w-10 text-green-600"
 						viewBox="0 0 24 24"

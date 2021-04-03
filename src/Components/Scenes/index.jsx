@@ -26,6 +26,12 @@ const Scenes = () => {
 			}
 		)
 		response = await response.json()
+
+		response.members = response.members.map((member) => {
+			member.characters = member.characters.map((char) => char._id)
+			return member
+		})
+		console.log("response.members", response.members)
 		setCampaign({ ...response })
 		setScenes([...response.scenes])
 		console.log("scenes", scenes)
@@ -44,7 +50,7 @@ const Scenes = () => {
 				name: entry.name,
 				dsc: entry.dsc,
 				campaign: id,
-				members: campaign.members,
+				members: campaign.members.map((member) => member._id),
 			}
 			if (!entry.id) body.members = [...campaign.members]
 			let _id = await fetch(
@@ -131,7 +137,7 @@ const Scenes = () => {
 						/>
 						<div className="">
 							<div>
-								<a href={`/chat/${scene._id}`}>
+								<a href={`/chat/${id}/${scene._id}`}>
 									<svg
 										className="h-8 w-8 text-green-500"
 										viewBox="0 0 24 24"
@@ -147,7 +153,7 @@ const Scenes = () => {
 								</a>
 							</div>
 							<div>
-								<a href={`/scene/${scene._id}`}>
+								<a href={`/scene/${id}/${scene._id}`}>
 									<svg
 										className="h-8 w-8 text-green-500"
 										fill="none"

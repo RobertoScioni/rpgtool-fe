@@ -1,0 +1,78 @@
+{
+	"_id": { "$oid": "60642fb3f59dc400155a8531" },
+	"name": "zird 3",
+	"dsc": "with a vengeance",
+	"owner": { "$oid": "604b0bace15419189ac24ddd" },
+	"sheet": {
+		"Counters": [
+			{
+				"name": "Physical Stress",
+				"min": { "$numberInt": "0" },
+				"value": { "$numberInt": "0" },
+				"max": { "$numberInt": "2" },
+				"abbreviation": "PS"
+			},
+			{
+				"name": "Mental Stress",
+				"min": { "$numberInt": "0" },
+				"value": { "$numberInt": "0" },
+				"max": { "$numberInt": "2" },
+				"abbreviation": "MS"
+			},
+			{
+				"name": "Fate Points",
+				"min": { "$numberInt": "0" },
+				"value": { "$numberInt": "3" },
+				"max": { "$numberInt": "3" },
+				"abbreviation": "FP"
+			}
+		],
+		"Pages": {
+			"Skills": [
+				{ "name": "", "macro": "[4dF+4]" },
+				{ "name": "", "macro": "[4dF+3]" },
+				{ "name": "", "macro": "[4dF+3]" },
+				{ "name": "", "macro": "[4dF+2]" },
+				{ "name": "", "macro": "[4dF+2]" },
+				{ "name": "", "macro": "[4dF+2]" },
+				{ "name": "", "macro": "[4dF+1]" },
+				{ "name": "", "macro": "[4dF+1]" },
+				{ "name": "", "macro": "[4dF+1]" },
+				{ "name": "", "macro": "[4dF+1]" }
+			],
+			"Aspects": [
+				{ "name": "", "dsc": "High Concept" },
+				{ "name": "", "dsc": "Trouble" },
+				{ "name": "" },
+				{ "name": "" },
+				{ "name": "" }
+			],
+			"Consequences": [
+				{ "name": "Mild", "value": "" },
+				{ "name": "Moderate", "value": "" },
+				{ "name": "Severe", "value": "" }
+			],
+			"extras": [],
+			"Stunts": [
+				{
+					"name": "",
+					"dsc": ""
+				},
+				{
+					"name": "",
+					"dsc": ""
+				},
+				{
+					"name": "",
+					"dsc": ""
+				},
+				{
+					"name": "",
+					"dsc": ""
+				}
+			]
+		}
+	},
+	"__v": { "$numberInt": "0" },
+	"imageUrl": "https://res.cloudinary.com/ratanax/image/upload/v1617178548/rpgTool/portraits/jqdnrwtnopcbzdsuydm1.jpg"
+}

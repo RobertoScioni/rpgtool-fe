@@ -12,9 +12,11 @@ import MicroElement from "../microElement"
 const Scenes = (props) => {
 	const [characters, setCharacters] = useState([])
 	const [reload, setReload] = useState(false)
+	const [templates, setTemplates] = useState([])
 	const [me, setMe] = useState({})
 	const [editProfile, setEditProfile] = useState(false)
 	const [remove, setRemove] = useState("")
+	const [sheet, setSheet] = useState(-1)
 	const id = props._id ? props._id : localStorage.getItem("id")
 
 	const del = async (_id) => {
@@ -57,7 +59,11 @@ const Scenes = (props) => {
 			let id = await fetch(`${process.env.REACT_APP_BACKEND}/users/me`, {
 				method: `PUT`,
 				credentials: "include",
-				body: JSON.stringify({ name: entry.name, dsc: entry.dsc }),
+				body: JSON.stringify({
+					name: entry.name,
+					dsc: entry.dsc,
+					sheet: templates[sheet].sheet,
+				}),
 				headers: new Headers({
 					"Content-Type": "application/json",
 				}),
@@ -99,6 +105,20 @@ const Scenes = (props) => {
 		console.log("characters", characters)
 	}
 
+	const getTemplates = async () => {
+		console.log("###id", id)
+		let response = await fetch(`${process.env.REACT_APP_BACKEND}/templates`, {
+			method: "GET",
+			credentials: "include",
+			headers: new Headers({
+				"Content-Type": "application/json",
+			}),
+		})
+		response = await response.json()
+		setTemplates([...response])
+		console.log("characters", characters)
+	}
+
 	const createElement = async (entry) => {
 		console.log(
 			"********************************************************************************"
@@ -115,7 +135,11 @@ const Scenes = (props) => {
 				{
 					method: `${entry._id ? "PUT" : "POST"}`,
 					credentials: "include",
-					body: JSON.stringify({ name: entry.name, dsc: entry.dsc }),
+					body: JSON.stringify({
+						name: entry.name,
+						dsc: entry.dsc,
+						sheet: templates[sheet].sheet,
+					}),
 					headers: new Headers({
 						"Content-Type": "application/json",
 					}),
@@ -146,6 +170,7 @@ const Scenes = (props) => {
 			console.log(props ? props.params._id : localStorage.getItem("id"))
 			getMe()
 			getElements()
+			getTemplates()
 			console.log("change in props")
 		},
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -154,6 +179,7 @@ const Scenes = (props) => {
 	useEffect(() => {
 		getMe()
 		getElements()
+		getTemplates()
 		console.log("reloading")
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [reload])
@@ -198,9 +224,25 @@ const Scenes = (props) => {
 				</div>
 			</div>
 			<div className="grid gap-4  grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 justify-items-center">
-				<div className="flex ring-2 ring-yellow-500 p-2 rounded-md bg-gray-700">
-					<Element save={createElement} placeholder="New Character" />
-					<div className="w-10"></div>
+				<div className="ring-2 ring-yellow-500 p-2 rounded-md bg-gray-700">
+					<div className="flex">
+						<Element save={createElement} placeholder="New Character" />
+						<div className="w-10"></div>
+					</div>
+					<select
+						name="character sheet"
+						value={sheet}
+						onChange={(e) => {
+							console.log(JSON.stringify(e.target.value))
+							setSheet(e.target.value)
+						}}
+					>
+						<option value={-1}>none</option>
+						{templates &&
+							templates.map((sheet, index) => (
+								<option value={index}>{sheet.name}</option>
+							))}
+					</select>
 				</div>
 				{characters.map((scene, index) => (
 					<div

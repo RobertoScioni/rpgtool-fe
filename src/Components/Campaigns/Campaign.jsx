@@ -41,7 +41,9 @@ const Campaign = (props) => {
 				"players characters before the filter",
 				JSON.stringify(player.characters)
 			)
-			player.characters = characters /*player.characters.filter((character) =>
+			player.characters = characters.filter((character) =>
+				player.characters.some((pc) => pc._id === character)
+			) /*player.characters.filter((character) =>
 				characters.includes(character._id)
 			)*/
 			return player
