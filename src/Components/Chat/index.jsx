@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom"
 import Message from "./message"
 import DiceRoller from "./diceRoller"
 import CharacterSheet from "./characterSheet"
+import MicroElement from "../microElement"
 import io from "socket.io-client"
 const connOptions = {
 	transports: ["websocket", "polling"],
@@ -14,6 +15,7 @@ console.log(connOptions)
 let socket = io(process.env.REACT_APP_BACKEND, connOptions) //socket instance
 const Chat = () => {
 	const { id, sceneId } = useParams()
+	const [scene, setScene] = useState({})
 	console.log("room id", id)
 	const [messages, setMessages] = useState([])
 	const messageEl = useRef(null)
@@ -23,10 +25,12 @@ const Chat = () => {
 	const [recipientPlayers, setRecipientPlayers] = useState([])
 	const [recipientCharacters, setRecipientCharacters] = useState([])
 	const [identity, setIdentity] = useState({})
-	const [scene, setScene] = useState({})
 	const [user, setUser] = useState({})
 	const [roller, setRoller] = useState(false)
 	const [sheet, setSheet] = useState(false)
+	const [gm, setGm] = useState(false)
+	const [charactersPage, setCharactersPage] = useState("PC") //value can be pc or npc it's not a boolean for futureproofing
+	const [bottomTraySize, setBottomTraySize] = useState("h-2/5")
 
 	const getScene = async () => {
 		const URL = sceneId
@@ -91,11 +95,12 @@ const Chat = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
-	useEffect(() => {})
-
 	useEffect(() => {
 		console.log("this should connect to the backend")
 		console.log("scene saved", scene)
+		console.log("7#scene owner", scene.owner)
+		console.log("7#my id", localStorage.getItem("id"))
+		setGm(scene.owner === localStorage.getItem("id") ? true : false)
 	}, [scene])
 
 	const toggleCharacterInRecipients = (character) => {
@@ -181,12 +186,15 @@ const Chat = () => {
 	})
 	return (
 		<div className="flex flex-col h-full p-2 bg-gray-900">
-			<a
-				href="/Campaigns"
-				className="absolute bg-gray-900 rounded-br-full text-yellow-400 px-4 py-1"
-			>
-				back to dashboard
-			</a>
+			<div className="sticky w-1/2 bg-gray-900 rounded-br-full text-yellow-400 pr-8 py-1 flex gap-2 items-center flex-wrap">
+				<a href="/Campaigns">back</a>
+				<input
+					type="search"
+					className="p-0.5 rounded-sm"
+					placeholder="search"
+				/>
+				<button className="text-white hover:text-red-500 px-2">PM only</button>
+			</div>
 			<div
 				className={`border-light-blue-500 overflow-y-hidden bg-gray-600 ${
 					roller ? "h-3/5" : "h-full"
@@ -250,7 +258,7 @@ const Chat = () => {
 
 						<div
 							id="separator"
-							className="border-solid border-t-4 w-full flex-grow"
+							className="border-solid border-b-4 w-full flex-grow"
 						></div>
 						{user &&
 							user.characters &&
@@ -270,42 +278,94 @@ const Chat = () => {
 									}
 								/>
 							))}
-						{user && (
-							<img
-								src={
-									user.imageUrl ||
-									"https://res.cloudinary.com/ratanax/image/upload/v1616546238/rpgTool/scenes/ttlrrin7qj3visuxtxyh.jpg"
-								}
-								title={user.name}
-								alt={user.name}
-								className={
-									identity._id === user._id
-										? "w-20 h-20 m-3 rounded-full ring-4 ring-green-400 object-scale-down bg-gray-500 "
-										: "w-20 h-20 rounded-full m-3 object-scale-down bg-gray-500 "
-								}
-								onClick={(e) => {
-									impersonate(user)
-								}}
-							/>
-						)}
 					</div>
 				</div>
 			</div>
 			{/* collapsible dice roller*/}
 			<div
 				className={`  text-gray-300 border-t-4 overflow-y-hidden ${
-					roller ? "visible h-2/5 bottom-0" : "invisible h-0"
+					roller
+						? `visible ${
+								bottomTraySize === "h-2/5"
+									? "h-2/5"
+									: "fixed h-screen w-full top-0 bg-gray-900"
+						  } bottom-0`
+						: "invisible h-0"
 				}`}
 			>
+				<button
+					onClick={() =>
+						setBottomTraySize(bottomTraySize === "h-2/5" ? "h-screen" : "h-2/5")
+					}
+					className={` w-full hover:bg-white hover:text-black ${
+						bottomTraySize === "h-2/5"
+							? "bg-white text-black"
+							: "bg-green-400 text-white"
+					}`}
+				>
+					{bottomTraySize === "h-2/5" ? "FULLSCREEN" : "REDUCE"}
+				</button>
+
 				{sheet ? (
 					identity.sheet ? (
 						<CharacterSheet sheet={identity.sheet} send={quickRoll} />
-					) : (
-						<div className=" h-full flex justify-center items-center">
-							<p className="font-bold text-red-700">
-								PLEASE SELECT A CHARACTER
-							</p>
+					) : gm ? (
+						<div>
+							<div className="flex">
+								<button
+									onClick={() => setCharactersPage("PC")}
+									className={` w-10 hover:bg-white hover:text-black ${
+										charactersPage === "PC"
+											? "bg-white text-black"
+											: "bg-black text-white"
+									}`}
+								>
+									PC
+								</button>
+								<button
+									onClick={() => setCharactersPage("NPC")}
+									className={` w-10 hover:bg-white hover:text-black ${
+										charactersPage === "NPC"
+											? "bg-white text-black"
+											: "bg-black text-white"
+									}`}
+								>
+									NPC
+								</button>
+								<div className="flex-grow"></div>
+							</div>
+							{scene.members &&
+								charactersPage === "PC" &&
+								scene.members.map((player) => (
+									<div className="flex flex-wrap flex-row border-2 p-2 border-white">
+										<div className=" border-r-2 pr-2 border-white">
+											<p>owner</p>
+											<MicroElement entry={player} />
+										</div>
+										<div className="ml-2">
+											<p>characters</p>
+											{player.characters.map((character) => (
+												<MicroElement
+													entry={character}
+													action={() => impersonate(character)}
+												/>
+											))}
+										</div>
+									</div>
+								))}
+							{scene.members && charactersPage === "NPC" && (
+								<div className="flex flex-wrap flex-row border-2 p-2">
+									{user.characters.map((character) => (
+										<MicroElement
+											entry={character}
+											action={() => impersonate(character)}
+										/>
+									))}
+								</div>
+							)}
 						</div>
+					) : (
+						"PLEASE SELECT A CHARACTER"
 					)
 				) : (
 					<DiceRoller appendInput={appendInput} />

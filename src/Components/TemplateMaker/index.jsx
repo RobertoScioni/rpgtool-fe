@@ -90,11 +90,13 @@ const TemplateMaker = (props) => {
 		tmp.Pages = pages
 		setSheet(tmp)
 		setIndex(-1)
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [pages])
 
 	useEffect(() => {
 		const tmp = { ...sheet, Counters }
 		setSheet(tmp)
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [Counters])
 
 	return (
