@@ -89,12 +89,14 @@ const Element = (props) => {
 					className="h-8 w-8 m2 align-top "
 					onClick={(e) => {
 						if (edit) {
-							props.save({
+							let save = {
 								name,
 								dsc,
 								file,
-								_id: props.entry ? props.entry._id : undefined,
-							})
+							}
+							if (props.entry._id) save._id = props.entry._id
+							if (props.entry.campaign) save.campaign = props.entry.campaign
+							props.save(save, props.mode)
 							if (!props.entry) setFile([])
 							if (props.placeholder) {
 								setName("")

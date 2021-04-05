@@ -17,6 +17,7 @@ import { useHistory } from "react-router-dom"
 
 const Manager = (props) => {
 	const [campaigns, setCampaigns] = useState([])
+	const [campaign, setCampaign] = useState({})
 	const [me, setMe] = useState({})
 	const [editProfile, setEditProfile] = useState(false)
 	const [reload, setReload] = useState(false)
@@ -90,23 +91,6 @@ const Manager = (props) => {
 		}
 	}
 
-	const getElements = async () => {
-		let response = await fetch(
-			`${process.env.REACT_APP_BACKEND}/${mode}${
-				props.campaignId ? "/" + props.campaignId : ""
-			}`,
-			{
-				method: "GET",
-				credentials: "include",
-				headers: new Headers({
-					"Content-Type": "application/json",
-				}),
-			}
-		)
-		response = await response.json()
-		return response
-	}
-
 	const createElement = async (entry) => {
 		console.log(
 			"********************************************************************************"
@@ -151,7 +135,28 @@ const Manager = (props) => {
 
 	useEffect(() => {
 		const get = async () => {
-			const me = await getMe()
+			const me = await fetches.get("users/me") // getMe()
+			setMe(me)
+			let address = campaignId ? mode + "/" + campaignId : mode
+			let elements = await fetches.get(address)
+			if (campaignId) {
+				setCampaign(elements)
+				elements = elements.scenes
+			}
+			console.log("#######", address)
+			console.log("#######", elements)
+
+			console.log("#######", elements)
+			setCampaigns(elements)
+		}
+		console.log("where am i", mode, campaignId)
+		get()
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
+
+	/* useEffect(() => {
+		const get = async () => {
+			const me = await fetches.get("users/me") // getMe()
 			setMe(me)
 			let elements = await fetches.get(
 				campaignId ? mode + "/" + campaignId : mode
@@ -161,15 +166,9 @@ const Manager = (props) => {
 		}
 		console.log("where am i", mode, campaignId)
 		get()
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [])
-
-	useEffect(() => {
-		getMe()
-		getElements()
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [reload])
+	}, [reload]) */
 	return (
 		<div className="bg-gray-900 h-full ">
 			<Helmet>
@@ -223,30 +222,37 @@ const Manager = (props) => {
 			</div>
 
 			<div className=" ml-4 flex flex-wrap justify-items-center gap-4">
-				<Element save={createElement} placeholder="New Campaign" />
-				{campaigns.map((campaign, index) => (
-					<Element
-						entry={campaign}
-						save={createElement}
-						key={`campaign-${index}`}
-					>
-						<Buttons.RemoveEntry onClick={() => setRemove(campaign._id)} />
-						{(mode === "campaigns" || mode === "scene") && (
-							<>
-								<Buttons.OpenGame
-									onClick={() => history.push(`/chat/${campaign._id}`)}
-								/>
-								<Buttons.ManagePlayers
-									onClick={() => history.push(`/campaign/${campaign._id}`)}
-								/>
-							</>
-						)}
+				<Element
+					save={fetches.createOrUpdate}
+					mode={mode}
+					entry={campaignId ? { campaign } : "undefined"}
+					placeholder="New Campaign"
+				/>
+				{campaigns.length > 0 &&
+					campaigns.map((campaign, index) => (
+						<Element
+							entry={campaign}
+							mode={mode}
+							save={createElement}
+							key={`campaign-${index}`}
+						>
+							<Buttons.RemoveEntry onClick={() => setRemove(campaign._id)} />
+							{(mode === "campaigns" || mode === "scene") && (
+								<>
+									<Buttons.OpenGame
+										onClick={() => history.push(`/chat/${campaign._id}`)}
+									/>
+									<Buttons.ManagePlayers
+										onClick={() => history.push(`/campaign/${campaign._id}`)}
+									/>
+								</>
+							)}
 
-						<Buttons.ManageScenes
-							onClick={() => history.push(`/scenes/${campaign._id}`)}
-						/>
-					</Element>
-				))}
+							<Buttons.ManageScenes
+								onClick={() => history.push(`/scenes/${campaign._id}`)}
+							/>
+						</Element>
+					))}
 
 				<div
 					className={`${

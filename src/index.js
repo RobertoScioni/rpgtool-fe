@@ -59,10 +59,10 @@ ReactDOM.render(
 			<Route exact path="/templatemaker">
 				<TemplateMaker />
 			</Route>
-			<Route path="/debug/:mode/">
+			<Route path="/debug/:mode/:campaignId/">
 				<Manager />
 			</Route>
-			<Route path="/debug/:mode/:campaignId/">
+			<Route path="/debug/:mode/">
 				<Manager />
 			</Route>
 		</React.StrictMode>

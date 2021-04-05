@@ -1,11 +1,19 @@
 const createOrUpdate = async (entry, mode) => {
 	//this function should detect if we are creating a character campaign of scene and fetch accordingly
+	console.log(
+		"welcome into the create element function - the mode is:",
+		mode,
+		"the entry is",
+		entry
+	)
 	try {
 		//each entity has at least these fields
+		let address = mode
 		let body = {
 			name: entry.name,
 			dsc: entry.dsc,
 		}
+		console.log("body", body, "address", address)
 		//scenes will also have a campaign field
 		if (entry.hasOwnProperty("campaign") && !entry.id) {
 			body = {
@@ -13,9 +21,18 @@ const createOrUpdate = async (entry, mode) => {
 				campaign: entry.campaign._id,
 				members: [...entry.campaign.members],
 			}
+			address = "scenes"
+			console.log(
+				"semmes like we have a scene---body",
+				body,
+				"address",
+				address
+			)
 		}
 		let _id = await fetch(
-			`${process.env.REACT_APP_BACKEND}/${mode}/${entry._id ? entry._id : ""}`,
+			`${process.env.REACT_APP_BACKEND}/${address}/${
+				entry._id ? entry._id : ""
+			}`,
 			{
 				method: `${entry._id ? "PUT" : "POST"}`,
 				credentials: "include",
@@ -31,7 +48,7 @@ const createOrUpdate = async (entry, mode) => {
 			const formData = new FormData()
 			formData.append("image", entry.file, entry.file.name)
 			let response = await fetch(
-				`${process.env.REACT_APP_BACKEND}/scenes/imageUpload/${_id}`,
+				`${process.env.REACT_APP_BACKEND}/${address}/imageUpload/${_id}`,
 				{
 					method: "POST",
 					credentials: "include",
@@ -90,19 +107,21 @@ const remove = async (entry, mode) => {
 	return response
 }
 
-const get = async (mode, ...id) => {
-	let response = await fetch(
-		`${process.env.REACT_APP_BACKEND}/${mode}${id.length ? "/" + id[0] : ""}`,
-		{
+const get = async (mode) => {
+	try {
+		let response = await fetch(`${process.env.REACT_APP_BACKEND}/${mode}`, {
 			method: "GET",
 			credentials: "include",
 			headers: new Headers({
 				"Content-Type": "application/json",
 			}),
-		}
-	)
-	response = await response.json()
-	return response
+		})
+		response = await response.json()
+		return response
+	} catch (error) {
+		console.log("get error", error)
+		return error
+	}
 }
 
 export { createOrUpdate, remove, get }
