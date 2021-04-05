@@ -32,6 +32,7 @@ const Register = () => {
 		}
 		console.log("component did mount")
 		checklogin()
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
 	useEffect(

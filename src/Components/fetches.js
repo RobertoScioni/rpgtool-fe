@@ -9,10 +9,7 @@ const createOrUpdate = async (entry, mode) => {
 	try {
 		//each entity has at least these fields
 		let address = mode
-		let body = {
-			name: entry.name,
-			dsc: entry.dsc,
-		}
+		let body = { ...entry }
 		console.log("body", body, "address", address)
 		//scenes will also have a campaign field
 		if (entry.hasOwnProperty("campaign") && !entry.id) {
@@ -80,6 +77,7 @@ const createOrUpdate = async (entry, mode) => {
 }
 
 const remove = async (entry, mode) => {
+	console.log("removing element ", entry)
 	let response = await fetch(
 		`${process.env.REACT_APP_BACKEND}/${mode}/${entry._id}`,
 		{

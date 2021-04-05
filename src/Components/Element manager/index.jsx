@@ -18,27 +18,19 @@ import { useHistory } from "react-router-dom"
 const Manager = (props) => {
 	const [campaigns, setCampaigns] = useState([])
 	const [campaign, setCampaign] = useState({})
+	const [templates, setTemplates] = useState([])
 	const [me, setMe] = useState({})
 	const [editProfile, setEditProfile] = useState(false)
 	const [reload, setReload] = useState(false)
 	const [remove, setRemove] = useState("")
-	const { mode, campaignId } = useParams()
+	const { campaignId } = useParams()
+	const mode = props.mode
 	const history = useHistory()
 
-	const del = async (_id) => {
-		let response = await fetch(
-			`${process.env.REACT_APP_BACKEND}/${mode}/${_id}`,
-			{
-				method: "DELETE",
-				credentials: "include",
-				headers: new Headers({
-					"Content-Type": "application/json",
-				}),
-			}
-		)
-		response = await response.body
-		console.log("###DELETE###")
+	const del = async (entry /* _id */) => {
+		let response = await fetches.remove(entry, mode)
 		console.log(response)
+		setCampaigns(campaigns.filter((element) => element._id !== entry._id))
 		setRemove(false)
 		setReload(!reload)
 	}
@@ -78,48 +70,12 @@ const Manager = (props) => {
 	}
 
 	const createElement = async (entry, mode) => {
-		console.log(
-			"********************************************************************************"
-		)
 		console.log("entry ", entry)
 		try {
 			let newOne = await fetches.createOrUpdate(entry, mode)
 			if (!entry._id) {
 				setCampaigns(campaigns.concat(newOne))
 			}
-			console.log("if it's new i should append this", newOne)
-			console.log("the key is probably in entry._id", entry._id)
-			/* if (entry.file.length === 0) {
-				throw new Error("picture is mandatory")
-			}
-			let id = await fetch(
-				`${process.env.REACT_APP_BACKEND}/${mode}/${
-					entry._id ? entry._id : ""
-				}`,
-				{
-					method: `${entry._id ? "PUT" : "POST"}`,
-					credentials: "include",
-					body: JSON.stringify({ name: entry.name, dsc: entry.dsc }),
-					headers: new Headers({
-						"Content-Type": "application/json",
-					}),
-				}
-			)
-			id = entry._id ? entry._id : await id.json()
-			console.log(id)
-			const formData = new FormData()
-			formData.append("image", entry.file, entry.file.name)
-			let response = await fetch(
-				`${process.env.REACT_APP_BACKEND}/${mode}/imageUpload/${id}`,
-				{
-					method: "POST",
-					credentials: "include",
-					body: formData,
-					headers: new Headers({}),
-				}
-			)
-			console.log("response", response)
-			setReload(!reload) */
 		} catch (error) {
 			console.log(error)
 		}
@@ -127,19 +83,24 @@ const Manager = (props) => {
 
 	useEffect(() => {
 		const get = async () => {
-			const me = await fetches.get("users/me") // getMe()
+			//get the user i think i'll move this stuff to local storage to be fair
+			const me = await fetches.get("users/me")
 			setMe(me)
+			//get the elements to show
 			let address = campaignId ? mode + "/" + campaignId : mode
 			let elements = await fetches.get(address)
 			if (campaignId) {
+				console.log("---we should be rendering scenes ---")
 				setCampaign(elements)
 				elements = elements.scenes
 			}
-			console.log("#######", address)
-			console.log("#######", elements)
-
-			console.log("#######", elements)
 			setCampaigns(elements)
+			console.log(campaigns)
+			if (mode === "characters") {
+				//get character sheet templates
+				const response = await fetches.get("templates")
+				setTemplates(response)
+			}
 		}
 		console.log("where am i", mode, campaignId)
 		get()
@@ -213,12 +174,13 @@ const Manager = (props) => {
 				</div>
 			</div>
 
-			<div className=" ml-4 flex flex-wrap justify-items-center gap-4">
+			<div className=" ml-4 pb-4 flex flex-wrap justify-items-center gap-4">
 				<Element
 					save={createElement /* fetches.createOrUpdate */}
 					mode={mode}
 					entry={campaignId ? { campaign } : "undefined"}
 					placeholder="New Campaign"
+					templates={templates}
 				/>
 				{campaigns.length > 0 &&
 					campaigns.map((campaign, index) => (
@@ -228,7 +190,7 @@ const Manager = (props) => {
 							save={createElement}
 							key={`campaign-${index}`}
 						>
-							<Buttons.RemoveEntry onClick={() => setRemove(campaign._id)} />
+							<Buttons.RemoveEntry onClick={() => setRemove(campaign)} />
 							{(mode === "campaigns" || mode === "scene") && (
 								<>
 									<Buttons.OpenGame
@@ -237,12 +199,16 @@ const Manager = (props) => {
 									<Buttons.ManagePlayers
 										onClick={() => history.push(`/campaign/${campaign._id}`)}
 									/>
+									<Buttons.ManageScenes
+										onClick={() => history.push(`/scenes/${campaign._id}`)}
+									/>
 								</>
 							)}
-
-							<Buttons.ManageScenes
-								onClick={() => history.push(`/scenes/${campaign._id}`)}
-							/>
+							{campaign.hasOwnProperty("sheet") && (
+								<Buttons.CharacterSheet
+									onClick={() => history.push(`/character/${campaign._id}`)}
+								/>
+							)}
 						</Element>
 					))}
 
