@@ -56,6 +56,7 @@ const createOrUpdate = async (entry, mode) => {
 					headers: new Headers({}),
 				}
 			)
+			body.imageUrl = await response.text()
 			console.log(response)
 		}
 		//scene only code
@@ -71,6 +72,8 @@ const createOrUpdate = async (entry, mode) => {
 			)
 			console.log(response)
 		}
+		console.log("updated body with image", body)
+		return body
 	} catch (error) {
 		console.log(error)
 	}

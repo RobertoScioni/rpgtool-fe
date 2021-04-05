@@ -29,7 +29,7 @@ const Element = (props) => {
 	useEffect(() => {
 		console.log("component did mount")
 		if (props.entry) {
-			setEdit(false)
+			setEdit(props.placeholder ? true : false)
 			setName(props.entry.name)
 			setDsc(props.entry.dsc)
 			setURL(props.entry.imageUrl)
@@ -54,9 +54,11 @@ const Element = (props) => {
 					})}
 				>
 					<img
-						src={acceptedFiles.length ? file.preview : imgURL}
+						src={file.preview || imgURL}
 						alt="element"
-						className="object-scale-down h-28 w-28"
+						className={`object-scale-down h-28 w-28 ${
+							file.preview || imgURL ? "" : "hidden"
+						}`}
 					></img>
 					<input {...getInputProps()} disabled={!edit} />
 				</span>
@@ -97,7 +99,7 @@ const Element = (props) => {
 							if (props.entry._id) save._id = props.entry._id
 							if (props.entry.campaign) save.campaign = props.entry.campaign
 							props.save(save, props.mode)
-							if (!props.entry) setFile([])
+							if (!props.entry._id) setFile([])
 							if (props.placeholder) {
 								setName("")
 								setDsc("")

@@ -22,22 +22,8 @@ const Manager = (props) => {
 	const [editProfile, setEditProfile] = useState(false)
 	const [reload, setReload] = useState(false)
 	const [remove, setRemove] = useState("")
-	//const [mode, setMode] = useState(useLocation())
 	const { mode, campaignId } = useParams()
 	const history = useHistory()
-
-	const getMe = async () => {
-		let response = await fetch(`${process.env.REACT_APP_BACKEND}/users/me`, {
-			method: "GET",
-			credentials: "include",
-			headers: new Headers({
-				"Content-Type": "application/json",
-			}),
-		})
-		response = await response.json()
-		console.log("#me", me)
-		return response
-	}
 
 	const del = async (_id) => {
 		let response = await fetch(
@@ -91,13 +77,19 @@ const Manager = (props) => {
 		}
 	}
 
-	const createElement = async (entry) => {
+	const createElement = async (entry, mode) => {
 		console.log(
 			"********************************************************************************"
 		)
 		console.log("entry ", entry)
 		try {
-			if (entry.file.length === 0) {
+			let newOne = await fetches.createOrUpdate(entry, mode)
+			if (!entry._id) {
+				setCampaigns(campaigns.concat(newOne))
+			}
+			console.log("if it's new i should append this", newOne)
+			console.log("the key is probably in entry._id", entry._id)
+			/* if (entry.file.length === 0) {
 				throw new Error("picture is mandatory")
 			}
 			let id = await fetch(
@@ -127,7 +119,7 @@ const Manager = (props) => {
 				}
 			)
 			console.log("response", response)
-			setReload(!reload)
+			setReload(!reload) */
 		} catch (error) {
 			console.log(error)
 		}
@@ -223,7 +215,7 @@ const Manager = (props) => {
 
 			<div className=" ml-4 flex flex-wrap justify-items-center gap-4">
 				<Element
-					save={fetches.createOrUpdate}
+					save={createElement /* fetches.createOrUpdate */}
 					mode={mode}
 					entry={campaignId ? { campaign } : "undefined"}
 					placeholder="New Campaign"
