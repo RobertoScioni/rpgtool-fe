@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import CharacterSheet from "../Chat/characterSheet"
 import MicroElement from "../microElement"
 import Element from "../element"
+import { Helmet } from "react-helmet"
 const TemplateMaker = (props) => {
 	const [editProfile, setEditProfile] = useState(false)
 	const [reload, setReload] = useState(false)
@@ -142,6 +143,13 @@ const TemplateMaker = (props) => {
 
 	return (
 		<div className="p-4 h-screen">
+			<Helmet>
+				<title>Template Maker</title>
+				<meta
+					name="template maker"
+					content="Visual creator for character sheet templates"
+				/>
+			</Helmet>
 			<div className="flex justify-between mb-5 bg-gray-600 p-1 px-4">
 				<div className="flex">
 					<div

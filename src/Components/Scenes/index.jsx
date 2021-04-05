@@ -8,6 +8,7 @@
  */
 import { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
+import { Helmet } from "react-helmet"
 import Element from "../element"
 const Scenes = () => {
 	let { id } = useParams()
@@ -104,6 +105,13 @@ const Scenes = () => {
 	}, [reload])
 	return (
 		<div>
+			<Helmet>
+				<title>Scenes Manager</title>
+				<meta
+					name="Scenes Manager"
+					content="Create list and delete the scenes of your campaign"
+				/>
+			</Helmet>
 			<div className="flex flex-row items-center h-20 p-2 bg-gray-500 mb-5">
 				<div className="flex justify-content-center align-center bg-gray-300 mr-2">
 					<img

@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react"
 import { Link, useParams } from "react-router-dom"
-import { Helmet } from "react-helmet"
-import MicroElement from "../microElement"
-const Scene = (props) => {
-	let { id, campaignId } = useParams()
 
+import MicroElement from "../microElement"
+const Campaign = (props) => {
+	let { id } = useParams()
 	const [users, setUsers] = useState([])
-	const [scene, setScene] = useState({})
+	const [campaign, setCampaign] = useState({})
 	const [players, setPlayers] = useState([])
 	const [characters, setCharacters] = useState([])
 	const [filter, setFilter] = useState("")
@@ -29,12 +28,12 @@ const Scene = (props) => {
 			})
 		})
 		setUsers([...response])
-		console.log("scenes", users)
+		console.log("campaigns", users)
 	}
 
 	const save = async () => {
-		console.log("save the scene")
-		const container = { ...scene }
+		console.log("save the campaign")
+		const container = { ...campaign }
 		container.members = JSON.parse(JSON.stringify(players))
 		container.members = container.members.map((player) => {
 			//player.characters = [...player.characters]
@@ -42,14 +41,16 @@ const Scene = (props) => {
 				"players characters before the filter",
 				JSON.stringify(player.characters)
 			)
-			player.characters = player.characters
-				.filter((character) => characters.includes(character._id))
-				.map((player) => player._id)
+			player.characters = characters.filter((character) =>
+				player.characters.some((pc) => pc._id === character)
+			) /*player.characters.filter((character) =>
+				characters.includes(character._id)
+			)*/
 			return player
 		})
 
 		let response = await fetch(
-			`${process.env.REACT_APP_BACKEND}/scenes/${id}`,
+			`${process.env.REACT_APP_BACKEND}/campaigns/${id}`,
 			{
 				method: "PUT",
 				credentials: "include",
@@ -63,9 +64,9 @@ const Scene = (props) => {
 		console.log(response)
 	}
 
-	const getScene = async () => {
+	const getCampaign = async () => {
 		let response = await fetch(
-			`${process.env.REACT_APP_BACKEND}/scenes/${id}`,
+			`${process.env.REACT_APP_BACKEND}/campaigns/${id}`,
 			{
 				method: "GET",
 				credentials: "include",
@@ -75,23 +76,25 @@ const Scene = (props) => {
 			}
 		)
 		response = await response.json()
-		setScene({ ...response })
+		setCampaign({ ...response })
+
 		setPlayers([...response.members])
 		setCharacters(
 			[].concat.apply(
 				[],
 				response.members.map(
-					(player) =>
-						player.characters /* {
-					console.log("###-", JSON.stringify(player))
-					return player.characters
-						? player.characters.map((character) => character._id)
-						: ""
-				}*/
+					(player) => {
+						console.log("###-", JSON.stringify(player))
+						return player.characters
+							? player.characters.map((character) => character._id)
+							: ""
+					}
+					//player.characters.map((character) => character._id)
 				)
 			)
 		)
-		console.log("scenes", users)
+
+		console.log("campaigns", users)
 	}
 
 	const userToPlayer = (user) => {
@@ -133,10 +136,8 @@ const Scene = (props) => {
 	}
 
 	useEffect(() => {
-		console.log("id:", id)
-		console.log("campaignId:", campaignId)
-		//in the beginning load the scene
-		getScene()
+		//in the beginning load the campaign
+		getCampaign()
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
@@ -147,13 +148,16 @@ const Scene = (props) => {
 	}, [players])
 
 	const newBody = () => {
-		const container = { ...scene }
+		const container = { ...campaign }
 		container.players = JSON.parse(JSON.stringify(players))
 		container.players = container.players.map((player) => {
-			player.characters = [...player.characters]
-			player.characters = player.characters.filter((character) =>
-				characters.includes(character._id)
-			)
+			if (player.hasOwnProperty(characters)) {
+				player.characters = [...player.characters]
+				player.characters = player.characters.filter((character) =>
+					characters.includes(character._id)
+				)
+			}
+			console.log("####", player)
 			return player
 		})
 		return container
@@ -164,18 +168,11 @@ const Scene = (props) => {
 	})
 
 	return (
-		<div className="flex flex-col w-full min-h-full">
-			<Helmet>
-				<title>Scene Manager</title>
-				<meta
-					name="Scene Manager"
-					content="add or remove Players and characters to your scene"
-				/>
-			</Helmet>
+		<div className="flex flex-col w-screen min-h-full ">
 			<div className="flex flex-row items-center h-20 p-2 bg-gray-500">
 				<div className="flex justify-content-center align-center bg-gray-300 mr-2">
 					<img
-						src={scene.imageUrl || "character.png"}
+						src={campaign.imageUrl || "character.png"}
 						className="object-scale-down w-20 p-2"
 						alt="avatar"
 					></img>
@@ -184,11 +181,11 @@ const Scene = (props) => {
 					<div className="w-max font-bold">
 						Players and Characters manager for:
 					</div>
-					<div>{scene.name}</div>
+					<div>{campaign.name}</div>
 				</div>
 				<div id="save" className="ml-1" onClick={(e) => save()}>
 					<svg
-						className="h-10 w-10 text-green-600"
+						class="h-10 w-10 text-green-600"
 						viewBox="0 0 24 24"
 						fill="none"
 						stroke="currentColor"
@@ -202,9 +199,9 @@ const Scene = (props) => {
 					</svg>
 				</div>
 
-				<Link id="open" className="ml-1" to={`/chat/${campaignId}/${id}`}>
+				<Link id="open" className="ml-1" to={`/chat/${id}`}>
 					<svg
-						className="h-10 w-10 text-green-600"
+						class="h-10 w-10 text-green-600"
 						viewBox="0 0 24 24"
 						fill="none"
 						stroke="currentColor"
@@ -218,7 +215,7 @@ const Scene = (props) => {
 
 				<div className=" text-right w-full">
 					<a href="/Campaigns" className=" text-yellow-500 bold">
-						back to:My Scenes Manager
+						back to:My Campaigns Manager
 					</a>
 				</div>
 			</div>
@@ -257,7 +254,6 @@ const Scene = (props) => {
 			<div className="flex justify-center mt-2 text-gray-300 font-bold">
 				CHARACTERS
 			</div>
-
 			<div className="flex justify-center mb-2">
 				<input
 					type="text"
@@ -311,4 +307,4 @@ const Scene = (props) => {
 	)
 }
 
-export default Scene
+export default Campaign

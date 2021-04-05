@@ -13,6 +13,7 @@ import Campaign from "./Components/Campaigns/Campaign"
 import Characters from "./Components/Characters"
 import Character from "./Components/Characters/editSheet"
 import TemplateMaker from "./Components/TemplateMaker"
+import Manager from "./Components/Element manager"
 
 console.log("backend at", process.env.REACT_APP_BACKEND)
 
@@ -57,6 +58,12 @@ ReactDOM.render(
 			</Route>
 			<Route exact path="/templatemaker">
 				<TemplateMaker />
+			</Route>
+			<Route path="/debug/:mode/">
+				<Manager />
+			</Route>
+			<Route path="/debug/:mode/:campaignId/">
+				<Manager />
 			</Route>
 		</React.StrictMode>
 	</BrowserRouter>,
