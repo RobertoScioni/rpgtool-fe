@@ -51,6 +51,7 @@ const TemplateMaker = (props) => {
 				}
 			)
 			console.log("response", response)
+			setMe(response)
 			setReload(!reload)
 		} catch (error) {
 			console.log(error)

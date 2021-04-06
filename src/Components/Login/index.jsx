@@ -36,7 +36,6 @@ const Login = () => {
 
 	useEffect(
 		() => async () => {
-			console.log("password:", password)
 			console.log("here goeas the fetch, in theory at least")
 			//const body = { email, password }
 			try {

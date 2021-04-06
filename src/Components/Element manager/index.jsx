@@ -87,7 +87,7 @@ const Manager = (props) => {
 			const me = await fetches.get("users/me")
 			setMe(me)
 			//get the elements to show
-			let address = campaignId ? mode + "/" + campaignId : mode
+			let address = campaignId ? "campaigns/" + campaignId : mode
 			let elements = await fetches.get(address)
 			if (campaignId) {
 				console.log("---we should be rendering scenes ---")
@@ -107,21 +107,6 @@ const Manager = (props) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
-	/* useEffect(() => {
-		const get = async () => {
-			const me = await fetches.get("users/me") // getMe()
-			setMe(me)
-			let elements = await fetches.get(
-				campaignId ? mode + "/" + campaignId : mode
-			)
-			console.log("#######", elements)
-			setCampaigns(elements)
-		}
-		console.log("where am i", mode, campaignId)
-		get()
-
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [reload]) */
 	return (
 		<div className="bg-gray-900 h-full ">
 			<Helmet>
@@ -182,31 +167,43 @@ const Manager = (props) => {
 					placeholder="New Campaign"
 					templates={templates}
 				/>
-				{campaigns.length > 0 &&
-					campaigns.map((campaign, index) => (
+				{campaigns &&
+					campaigns.length > 0 &&
+					campaigns.map((element, index) => (
 						<Element
-							entry={campaign}
+							entry={element}
 							mode={mode}
 							save={createElement}
-							key={`campaign-${index}`}
+							key={`element-${index}`}
 						>
-							<Buttons.RemoveEntry onClick={() => setRemove(campaign)} />
-							{(mode === "campaigns" || mode === "scene") && (
+							<Buttons.RemoveEntry onClick={() => setRemove(element)} />
+							{(mode === "campaigns" || mode === "scenes") && (
 								<>
 									<Buttons.OpenGame
-										onClick={() => history.push(`/chat/${campaign._id}`)}
+										onClick={() =>
+											history.push(
+												`/chat${mode === "scenes" ? "/" + campaign.name : ""}/${
+													element._id
+												}`
+											)
+										}
 									/>
 									<Buttons.ManagePlayers
-										onClick={() => history.push(`/campaign/${campaign._id}`)}
+										onClick={() =>
+											history.push(
+												`/
+													${mode === "scenes" ? "scene/" + campaign._id : "campaign"}/${element._id}`
+											)
+										}
 									/>
 									<Buttons.ManageScenes
-										onClick={() => history.push(`/scenes/${campaign._id}`)}
+										onClick={() => history.push(`/scenes/${element._id}`)}
 									/>
 								</>
 							)}
-							{campaign.hasOwnProperty("sheet") && (
+							{element.hasOwnProperty("sheet") && (
 								<Buttons.CharacterSheet
-									onClick={() => history.push(`/character/${campaign._id}`)}
+									onClick={() => history.push(`/character/${element._id}`)}
 								/>
 							)}
 						</Element>

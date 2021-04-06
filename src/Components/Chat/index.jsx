@@ -14,7 +14,7 @@ console.log(connOptions)
 
 let socket = io(process.env.REACT_APP_BACKEND, connOptions) //socket instance
 const Chat = () => {
-	const { id, sceneId } = useParams()
+	const { id, sceneId, campaignName } = useParams()
 	const [scene, setScene] = useState({})
 	console.log("room id", id)
 	const [messages, setMessages] = useState([])
@@ -29,15 +29,21 @@ const Chat = () => {
 	const [roller, setRoller] = useState(false)
 	const [sheet, setSheet] = useState(false)
 	const [gm, setGm] = useState(false)
-	const [charactersPage, setCharactersPage] = useState("PC") //value can be pc or npc it's not a boolean for futureproofing
+	const [charactersPage, setCharactersPage] = useState("NPC") //value can be pc or npc it's not a boolean for futureproofing
 	const [bottomTraySize, setBottomTraySize] = useState("h-2/5")
 	const [filter, setFilter] = useState("")
 	const [PMonly, setPMonly] = useState(false)
 
+	const borderColor = () => {
+		return recipientPlayers.length > 0 ? "border-red-500" : "border-white"
+	}
+
 	const getScene = async () => {
-		const URL = sceneId
+		const URL = campaignName
 			? `${process.env.REACT_APP_BACKEND}/scenes/${sceneId}`
 			: `${process.env.REACT_APP_BACKEND}/campaigns/${id}`
+
+		console.log("sceneId ", sceneId, " URL ", URL)
 		let response = await fetch(URL, {
 			method: "GET",
 			credentials: "include",
@@ -65,10 +71,10 @@ const Chat = () => {
 		setScene({ ...response })
 
 		let room = { ...response }
-		room.id = id
+		room.id = campaignName ? response.campaign : id
 
 		response = await fetch(
-			`${process.env.REACT_APP_BACKEND}/campaigns/${id}/messages`,
+			`${process.env.REACT_APP_BACKEND}/campaigns/${room.id}/messages`,
 			{
 				method: "GET",
 				credentials: "include",
@@ -188,7 +194,7 @@ const Chat = () => {
 	})
 	return (
 		<div className="flex flex-col h-full p-2 bg-gray-900">
-			<div className="sticky bg-gray-900 rounded-br-full text-yellow-400 pr-8 py-1 flex gap-2 items-center flex-wrap">
+			<div className="sticky bg-gray-900 text-yellow-400 pr-8 py-1 flex gap-2 items-center flex-wrap">
 				<a href="/Campaigns">back</a>
 				<input
 					type="search"
@@ -207,6 +213,11 @@ const Chat = () => {
 				>
 					PM only
 				</button>
+				<div className="flex-grow"></div>
+				<p>
+					Argo://{campaignName && campaignName + "/"}
+					{scene.name}
+				</p>
 			</div>
 			<div
 				className={`border-light-blue-500 overflow-y-hidden bg-gray-600 ${
@@ -216,7 +227,7 @@ const Chat = () => {
 				<div className="h-full flex flex-row overflow-y-hidden">
 					<div
 						id="Inbox"
-						className="flex-grow px-2 border-r-4 flex flex-col overflow-scroll scrollbar-thin scrollbar-thin-light scrollbar-thumb-yellow-600 overflow-x-hidden"
+						className={`flex-grow px-2 border-r-4 flex flex-col overflow-scroll scrollbar-thin scrollbar-thin-light scrollbar-thumb-yellow-600 overflow-x-hidden ${borderColor()}`}
 						ref={messageEl}
 					>
 						{messages.length > 0 &&
@@ -281,7 +292,7 @@ const Chat = () => {
 
 						<div
 							id="separator"
-							className="border-solid border-b-4 w-full flex-grow"
+							className={`border-solid border-b-4 w-full flex-grow ${borderColor()}`}
 						></div>
 						{user &&
 							user.characters &&
@@ -306,13 +317,13 @@ const Chat = () => {
 			</div>
 			{/* collapsible dice roller*/}
 			<div
-				className={`  text-gray-300 border-t-4 overflow-y-hidden ${
+				className={`  text-gray-300  overflow-y-hidden ${
 					roller
 						? `visible ${
 								bottomTraySize === "h-2/5"
 									? "h-2/5"
 									: "fixed h-screen w-full top-0 bg-gray-900"
-						  } bottom-0`
+						  } bottom-0 border-t-4 ${borderColor()}`
 						: "invisible h-0"
 				}`}
 			>
@@ -338,19 +349,21 @@ const Chat = () => {
 				{sheet ? (
 					identity.sheet ? (
 						<CharacterSheet sheet={identity.sheet} send={quickRoll} />
-					) : gm ? (
-						<div>
-							<div className="flex">
-								<button
-									onClick={() => setCharactersPage("PC")}
-									className={` w-10 hover:bg-white hover:text-black ${
-										charactersPage === "PC"
-											? "bg-white text-black"
-											: "bg-black text-white"
-									}`}
-								>
-									PC
-								</button>
+					) : (
+						<div className="overflow-y-scroll scrollbar-thin scrollbar-thumb-yellow-600">
+							<div className="flex mt-0.5">
+								{gm && (
+									<button
+										onClick={() => setCharactersPage("PC")}
+										className={` w-10 hover:bg-white hover:text-black ${
+											charactersPage === "PC"
+												? "bg-white text-black"
+												: "bg-black text-white"
+										}`}
+									>
+										PC
+									</button>
+								)}
 								<button
 									onClick={() => setCharactersPage("NPC")}
 									className={` w-10 hover:bg-white hover:text-black ${
@@ -359,27 +372,27 @@ const Chat = () => {
 											: "bg-black text-white"
 									}`}
 								>
-									NPC
+									{gm ? "NPC" : "PC"}
 								</button>
-								<div className="flex-grow"></div>
+								<div className="flex-grow ml-2">
+									Click on a character to see their character sheet
+								</div>
 							</div>
 							{scene.members &&
 								charactersPage === "PC" &&
 								scene.members.map((player) => (
-									<div className="flex flex-wrap flex-row border-2 p-2 border-white">
+									<div className="flex flex-wrap flex-row border-2 p-2 border-white items-center">
 										<div className=" border-r-2 pr-2 border-white">
 											<p>owner</p>
 											<MicroElement entry={player} />
 										</div>
-										<div className="ml-2">
-											<p>characters</p>
-											{player.characters.map((character) => (
-												<MicroElement
-													entry={character}
-													action={() => impersonate(character)}
-												/>
-											))}
-										</div>
+
+										{player.characters.map((character) => (
+											<MicroElement
+												entry={character}
+												action={() => impersonate(character)}
+											/>
+										))}
 									</div>
 								))}
 							{scene.members && charactersPage === "NPC" && (
@@ -393,15 +406,13 @@ const Chat = () => {
 								</div>
 							)}
 						</div>
-					) : (
-						"PLEASE SELECT A CHARACTER"
 					)
 				) : (
 					<DiceRoller appendInput={appendInput} />
 				)}
 			</div>
 			<form
-				className="flex bg-gray-600 items-center border-t-4 "
+				className={`flex bg-gray-50 items-center border-t-4 ${borderColor()}`}
 				onSubmit={(e) => {
 					e.preventDefault()
 					setSend(!send)

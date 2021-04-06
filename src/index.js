@@ -6,17 +6,17 @@ import reportWebVitals from "./reportWebVitals"
 import Login from "./Components/Login"
 import Register from "./Components/register"
 import Chat from "./Components/Chat"
-import Scene from "./Components/Scenes/scene"
-import Campaign from "./Components/Campaigns/Campaign"
 import Character from "./Components/Characters/editSheet"
 import TemplateMaker from "./Components/TemplateMaker"
 import Manager from "./Components/Element manager"
+import Invites from "./Components/Element manager/Invites"
 
 console.log("backend at", process.env.REACT_APP_BACKEND)
 
 ReactDOM.render(
 	<BrowserRouter>
 		<React.StrictMode>
+			{/* auth routes */}
 			<Route exact path="/">
 				<Login />
 			</Route>
@@ -26,24 +26,28 @@ ReactDOM.render(
 			<Route exact path="/register">
 				<Register />
 			</Route>
-			<Route path="/chat/:id/:scene">
+			{/* chat routes */}
+			<Route exact path="/chat/:campaignName/:sceneId">
 				<Chat />
 			</Route>
-			<Route path="/chat/:id/">
+			<Route exact path="/chat/:id">
 				<Chat />
 			</Route>
+			{/* campaign routes */}
 			<Route exact path="/campaigns">
 				<Manager mode="campaigns" />
 			</Route>
 			<Route exact path="/campaign/:id">
-				<Campaign />
+				<Invites />
 			</Route>
+			{/* scene routes */}
 			<Route exact path="/scenes/:campaignId">
-				<Manager mode="campaigns" />
+				<Manager mode="scenes" />
 			</Route>
-			<Route path="/scene/:campaignId/:id">
-				<Scene />
+			<Route exact path="/scene/:campaignId/:id">
+				<Invites />
 			</Route>
+			{/* character Routes */}
 			<Route exact path="/characters">
 				<Manager mode="characters" />
 			</Route>

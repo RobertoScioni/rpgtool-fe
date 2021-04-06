@@ -13,10 +13,19 @@ const createOrUpdate = async (entry, mode) => {
 		console.log("body", body, "address", address)
 		//scenes will also have a campaign field
 		if (entry.hasOwnProperty("campaign") && !entry.id) {
+			let members = [
+				...entry.campaign.members.map((member) => {
+					member.characters = member.characters.map(
+						(character) => character._id
+					)
+					return member
+				}),
+			]
+			console.log("members", members)
 			body = {
 				...body,
 				campaign: entry.campaign._id,
-				members: [...entry.campaign.members],
+				members,
 			}
 			address = "scenes"
 			console.log(

@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react"
 import { Link, useParams } from "react-router-dom"
+import * as fetches from "../fetches"
 
 import MicroElement from "../microElement"
 const Campaign = (props) => {
-	let { id } = useParams()
+	let { id, campaignId } = useParams()
 	const [users, setUsers] = useState([])
 	const [campaign, setCampaign] = useState({})
 	const [players, setPlayers] = useState([])
@@ -50,7 +51,9 @@ const Campaign = (props) => {
 		})
 
 		let response = await fetch(
-			`${process.env.REACT_APP_BACKEND}/campaigns/${id}`,
+			`${process.env.REACT_APP_BACKEND}/${
+				campaignId ? "scenes" : "campaigns"
+			}/${id}`,
 			{
 				method: "PUT",
 				credentials: "include",
@@ -60,41 +63,9 @@ const Campaign = (props) => {
 				}),
 			}
 		)
+
 		response = await response.json()
 		console.log(response)
-	}
-
-	const getCampaign = async () => {
-		let response = await fetch(
-			`${process.env.REACT_APP_BACKEND}/campaigns/${id}`,
-			{
-				method: "GET",
-				credentials: "include",
-				headers: new Headers({
-					"Content-Type": "application/json",
-				}),
-			}
-		)
-		response = await response.json()
-		setCampaign({ ...response })
-
-		setPlayers([...response.members])
-		setCharacters(
-			[].concat.apply(
-				[],
-				response.members.map(
-					(player) => {
-						console.log("###-", JSON.stringify(player))
-						return player.characters
-							? player.characters.map((character) => character._id)
-							: ""
-					}
-					//player.characters.map((character) => character._id)
-				)
-			)
-		)
-
-		console.log("campaigns", users)
 	}
 
 	const userToPlayer = (user) => {
@@ -137,35 +108,39 @@ const Campaign = (props) => {
 
 	useEffect(() => {
 		//in the beginning load the campaign
-		getCampaign()
+		console.log("id ", id, "campaignID ", campaignId)
+		//getCampaign()
+		const get = async () => {
+			let response = await fetches.get(
+				`${campaignId ? "scenes" : "campaigns"}/${id}`
+			)
+			setCampaign(response)
+			setPlayers(response.members)
+			setCharacters(
+				[].concat.apply(
+					[],
+					response.members.map(
+						(player) => {
+							console.log("###-", JSON.stringify(player))
+							return player.characters
+								? player.characters.map((character) => character._id)
+								: ""
+						}
+						//player.characters.map((character) => character._id)
+					)
+				)
+			)
+		}
+		get()
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
 	useEffect(() => {
 		getPlayers()
+
 		console.log("players changed", players)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [players])
-
-	const newBody = () => {
-		const container = { ...campaign }
-		container.players = JSON.parse(JSON.stringify(players))
-		container.players = container.players.map((player) => {
-			if (player.hasOwnProperty(characters)) {
-				player.characters = [...player.characters]
-				player.characters = player.characters.filter((character) =>
-					characters.includes(character._id)
-				)
-			}
-			console.log("####", player)
-			return player
-		})
-		return container
-	}
-
-	useEffect(() => {
-		console.log("body for the put fetch - ", newBody())
-	})
 
 	return (
 		<div className="flex flex-col w-screen min-h-full ">
@@ -219,26 +194,27 @@ const Campaign = (props) => {
 					</a>
 				</div>
 			</div>
-			<div className="h-24 flex w-full items-center">
-				{players.map((element, index) => (
-					<div className="relative" key={`player-${index}`}>
-						<MicroElement entry={element} action={playertoUser} />
-						<div className="absolute top-0 right-0 rounded-full bg-gray-500 p-1">
-							<svg
-								className="h-5 w-5 text-green-300"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								strokeWidth="2"
-								strokeLinecap="round"
-								strokeLinejoin="round"
-							>
-								{" "}
-								<polyline points="20 6 9 17 4 12" />
-							</svg>
+			<div className="h-24 p-2 gap-2 flex w-full items-center">
+				{players &&
+					players.map((element, index) => (
+						<div className="relative" key={`player-${index}`}>
+							<MicroElement entry={element} action={playertoUser} />
+							<div className="absolute top-0 right-0 rounded-full bg-gray-500 p-1">
+								<svg
+									className="h-5 w-5 text-green-300"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									strokeWidth="2"
+									strokeLinecap="round"
+									strokeLinejoin="round"
+								>
+									{" "}
+									<polyline points="20 6 9 17 4 12" />
+								</svg>
+							</div>
 						</div>
-					</div>
-				))}
+					))}
 				<div className="flex-grow text-center text-gray-300 font-bold">
 					{" "}
 					PLAYERS{" "}
@@ -263,45 +239,34 @@ const Campaign = (props) => {
 					onChange={(e) => setFilter(e.target.value)}
 				/>
 			</div>
-			<div className="flex-grow grid grid-cols-12 gap-1">
-				{players.map(
-					(player) =>
-						player.characters &&
-						player.characters
-							.filter((element) => {
-								if (filter === "") return true
-								if (element.name.includes(filter)) return true
-								return false
-							})
-							.map((character, index) => {
-								const selected = characters.includes(character._id)
-								const action = selected ? removeCharacter : addCharacter
-								return (
-									<div className="relative w-16">
-										<MicroElement
-											entry={character}
-											key={`character-${index}`}
-											action={action}
-										/>
-										{selected && (
-											<div className="absolute top-0 right-0 rounded-full bg-gray-500 p-1">
-												<svg
-													className="h-5 w-5 text-green-300"
-													viewBox="0 0 24 24"
-													fill="none"
-													stroke="currentColor"
-													strokeWidth="2"
-													strokeLinecap="round"
-													strokeLinejoin="round"
-												>
-													<polyline points="20 6 9 17 4 12" />
-												</svg>
-											</div>
-										)}
-									</div>
-								)
-							})
-				)}
+			<div className="flex-grow px-2 justify-items-center">
+				{players &&
+					players.map((player) => (
+						<div>
+							<p className="text-white bold">{player.name}</p>
+							<div className="flex flex-row flex-wrap gap-2">
+								{player.characters &&
+									player.characters
+										.filter((element) => {
+											if (filter === "") return true
+											if (element.name.includes(filter)) return true
+											return false
+										})
+										.map((character, index) => {
+											const selected = characters.includes(character._id)
+											const action = selected ? removeCharacter : addCharacter
+											return (
+												<MicroElement
+													entry={character}
+													key={`character-${index}`}
+													action={action}
+													selected={selected}
+												/>
+											)
+										})}
+							</div>
+						</div>
+					))}
 			</div>
 		</div>
 	)
