@@ -195,9 +195,11 @@ const Manager = (props) => {
 											)
 										}
 									/>
-									<Buttons.ManageScenes
-										onClick={() => history.push(`/scenes/${element._id}`)}
-									/>
+									{mode === "campaigns" && (
+										<Buttons.ManageScenes
+											onClick={() => history.push(`/scenes/${element._id}`)}
+										/>
+									)}
 								</>
 							)}
 							{element.hasOwnProperty("sheet") && (
