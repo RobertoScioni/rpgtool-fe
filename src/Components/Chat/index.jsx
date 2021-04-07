@@ -195,7 +195,7 @@ const Chat = () => {
 	})
 	return (
 		<div className="flex flex-col h-full p-2 bg-gray-900">
-			<div className="sticky bg-gray-900 text-yellow-400 pr-8 py-1 flex gap-2 items-center flex-wrap">
+			<div className="sticky bg-gray-900 text-yellow-400 pr-8 py-1 flex gap-2 items-center flex-wrap-reverse">
 				<a href="/Campaigns">back</a>
 				<input
 					type="search"

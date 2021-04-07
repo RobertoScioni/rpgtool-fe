@@ -16,6 +16,24 @@ const UxButton = (props) => {
 	)
 }
 
+const UxLink = (props) => {
+	return (
+		<a href={props.href} title={props.title} className="max-h-8">
+			<svg
+				className={`h-8 w-8 text-green-500 hover:text-white ${props.className}`}
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				strokeWidth="2"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+			>
+				{props.children}
+			</svg>
+		</a>
+	)
+}
+
 const Modal = (props) => {
 	return (
 		<div className="h-screen w-screen fixed flex justify-items-center items-center">
@@ -42,28 +60,28 @@ const RemoveEntry = (props) => {
 
 const OpenGame = (props) => {
 	return (
-		<UxButton title="startGame" {...props}>
+		<UxLink title="startGame" {...props}>
 			<polygon points="5 3 19 12 5 21 5 3" />
-		</UxButton>
+		</UxLink>
 	)
 }
 
 const ManagePlayers = (props) => {
 	return (
-		<UxButton title="Manage Players" {...props}>
+		<UxLink title="Manage Players" {...props}>
 			<path
 				strokeLinecap="round"
 				strokeLinejoin="round"
 				strokeWidth="2"
 				d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
 			/>
-		</UxButton>
+		</UxLink>
 	)
 }
 
 const ManageScenes = (props) => {
 	return (
-		<UxButton title="Manage Scenes" {...props}>
+		<UxLink title="Manage Scenes" {...props}>
 			<rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18" />
 			<line x1="7" y1="2" x2="7" y2="22" />
 			<line x1="17" y1="2" x2="17" y2="22" />
@@ -72,7 +90,7 @@ const ManageScenes = (props) => {
 			<line x1="2" y1="17" x2="7" y2="17" />
 			<line x1="17" y1="17" x2="22" y2="17" />
 			<line x1="17" y1="7" x2="22" y2="7" />
-		</UxButton>
+		</UxLink>
 	)
 }
 

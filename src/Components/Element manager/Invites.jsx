@@ -24,7 +24,7 @@ const Campaign = (props) => {
 			player.characters = characters.filter((character) =>
 				player.characters.some((pc) => pc._id === character)
 			) /*player.characters.filter((character) =>
-				characters.includes(character._id)
+				characters.includes(character._id) 
 			)*/
 			return player
 		})

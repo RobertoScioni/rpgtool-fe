@@ -8,7 +8,7 @@
  */
 import { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
-import Element from "../element"
+import Element from "../element2"
 import MicroElement from "../microElement"
 
 const getCharacter = async (character) => {
@@ -35,6 +35,13 @@ const EditSheet = (props) => {
 	const [page, setPage] = useState("")
 	const [description, setDescription] = useState(false)
 	const { characterId } = useParams()
+
+	const pushToPage = (page, element) => {
+		console.log("push", element, "into", page)
+		const simulacra = { ...character }
+		simulacra.sheet.Pages[page].push(element)
+		setCharacter(simulacra)
+	}
 
 	const getMe = async () => {
 		let response = await fetch(`${process.env.REACT_APP_BACKEND}/users/me`, {
@@ -250,13 +257,13 @@ const EditSheet = (props) => {
 					<div className="flex-grow"></div>
 				</div>
 				<div id="page-container">
-					<div className="h-full py-5 flex flex-col flex-wrap">
+					<div className="h-full py-5 flex flex-col flex-wrap gap-1">
 						{page &&
 							character.sheet.Pages[page].map((macro, index) => {
 								return (
 									<div
 										key={`macro-${index}`}
-										className="p-2 ring-1 ring-gray-400 m-1 flex justify-center"
+										className="p-2 ring-1 ring-gray-400 m-1 flex justify-center flex-wrap gap-4"
 									>
 										<input
 											className="text-gray-900"
@@ -270,7 +277,7 @@ const EditSheet = (props) => {
 										></input>
 										{macro.hasOwnProperty("macro") && (
 											<>
-												<span className=" text-yellow-400 ml-4 mr-2">
+												<span className=" text-yellow-400 ml-4 -mr-2">
 													macro
 												</span>
 												<input
@@ -353,6 +360,15 @@ const EditSheet = (props) => {
 												</div>
 											</>
 										)}
+										<div className="hover:text-yellow-400 text-gray-200">
+											<button
+												onClick={(e) => {
+													pushToPage(page, { ...macro })
+												}}
+											>
+												Duplicate
+											</button>
+										</div>
 									</div>
 								)
 							})}

@@ -44,7 +44,8 @@ ReactDOM.render(
 			<Route exact path="/scenes/:campaignId">
 				<Manager mode="scenes" />
 			</Route>
-			<Route exact path="/scene/:campaignId/:id">
+			<Route path="/scene/:campaignId/:id">
+				<p>invite manager should render here</p>
 				<Invites />
 			</Route>
 			{/* character Routes */}

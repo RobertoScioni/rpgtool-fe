@@ -181,26 +181,17 @@ const Manager = (props) => {
 							{(mode === "campaigns" || mode === "scenes") && (
 								<>
 									<Buttons.OpenGame
-										onClick={() =>
-											history.push(
-												`/chat${mode === "scenes" ? "/" + campaign.name : ""}/${
-													element._id
-												}`
-											)
-										}
+										href={`/chat${
+											mode === "scenes" ? "/" + campaign.name : ""
+										}/${element._id}`}
 									/>
 									<Buttons.ManagePlayers
-										onClick={() =>
-											history.push(
-												`/
-													${mode === "scenes" ? "scene/" + campaign._id : "campaign"}/${element._id}`
-											)
-										}
+										href={`/${
+											mode === "scenes" ? "scene/" + campaign._id : "campaign"
+										}/${element._id}`}
 									/>
 									{mode === "campaigns" && (
-										<Buttons.ManageScenes
-											onClick={() => history.push(`/scenes/${element._id}`)}
-										/>
+										<Buttons.ManageScenes href={`/scenes/${element._id}`} />
 									)}
 								</>
 							)}

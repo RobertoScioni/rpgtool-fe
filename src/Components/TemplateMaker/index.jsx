@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import CharacterSheet from "../Chat/characterSheet"
 import MicroElement from "../microElement"
-import Element from "../element"
+import Element from "../element2"
 import { Helmet } from "react-helmet"
 const TemplateMaker = (props) => {
 	const [editProfile, setEditProfile] = useState(false)
