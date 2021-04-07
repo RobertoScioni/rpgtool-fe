@@ -16,9 +16,24 @@ const MicroElement = (props) => {
 					alt="avatar"
 				></img>
 			</div>
-			<div className="absolute inset-x-0 mx-auto -mt-12">
+			<div className="absolute inset-x-0 mx-auto -mt-12 text-overlay">
 				{props.entry.name}
 			</div>
+			{props.selected && (
+				<div className="absolute top-0 right-0 rounded-full bg-gray-500 p-1">
+					<svg
+						className="h-5 w-5 text-green-300"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						strokeWidth="2"
+						strokeLinecap="round"
+						strokeLinejoin="round"
+					>
+						<polyline points="20 6 9 17 4 12" />
+					</svg>
+				</div>
+			)}
 		</div>
 	)
 }

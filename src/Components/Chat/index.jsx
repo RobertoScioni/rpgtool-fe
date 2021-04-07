@@ -3,6 +3,8 @@ import { useParams } from "react-router-dom"
 import Message from "./message"
 import DiceRoller from "./diceRoller"
 import CharacterSheet from "./characterSheet"
+import MicroElement from "../microElement"
+//import * as UX from "../Ux"
 import io from "socket.io-client"
 const connOptions = {
 	transports: ["websocket", "polling"],
@@ -11,30 +13,10 @@ const connOptions = {
 
 console.log(connOptions)
 
-const test = {
-	weapons: [
-		{
-			name: "vorpal Greatsword",
-			macro:
-				"hit AC up to [1d20+3] for [2d6+3] cutting damage. on a natural 20 this weapon will remove one of the opponent's heads",
-		},
-		{
-			name: "dagger",
-			macro:
-				"hit AC up to [1d20] for [1d4] piercing damage. on a natural 20 this weapon will remove on of the ooppent's heads",
-		},
-	],
-	saves: [
-		{ name: "dexterity", macro: "dexterity save [1d20+1" },
-		{ name: "constitution", macro: "constitution save [1d20+1" },
-		{ name: "wisdom", macro: "wisdom save [1d20+1" },
-	],
-}
-
 let socket = io(process.env.REACT_APP_BACKEND, connOptions) //socket instance
 const Chat = () => {
-	const { id } = useParams()
-	const { sceneId } = useParams()
+	const { id, sceneId, campaignName } = useParams()
+	const [scene, setScene] = useState({})
 	console.log("room id", id)
 	const [messages, setMessages] = useState([])
 	const messageEl = useRef(null)
@@ -44,15 +26,25 @@ const Chat = () => {
 	const [recipientPlayers, setRecipientPlayers] = useState([])
 	const [recipientCharacters, setRecipientCharacters] = useState([])
 	const [identity, setIdentity] = useState({})
-	const [scene, setScene] = useState({})
 	const [user, setUser] = useState({})
 	const [roller, setRoller] = useState(false)
 	const [sheet, setSheet] = useState(false)
+	const [gm, setGm] = useState(false)
+	const [charactersPage, setCharactersPage] = useState("NPC") //value can be pc or npc it's not a boolean for futureproofing
+	const [bottomTraySize, setBottomTraySize] = useState("h-2/5")
+	const [filter, setFilter] = useState("")
+	const [PMonly, setPMonly] = useState(false)
+
+	const borderColor = () => {
+		return recipientPlayers.length > 0 ? "border-red-500" : "border-white"
+	}
 
 	const getScene = async () => {
-		const URL = sceneId
+		const URL = campaignName
 			? `${process.env.REACT_APP_BACKEND}/scenes/${sceneId}`
 			: `${process.env.REACT_APP_BACKEND}/campaigns/${id}`
+
+		console.log("sceneId ", sceneId, " URL ", URL)
 		let response = await fetch(URL, {
 			method: "GET",
 			credentials: "include",
@@ -80,10 +72,10 @@ const Chat = () => {
 		setScene({ ...response })
 
 		let room = { ...response }
-		room.id = id
+		room.id = campaignName ? response.campaign : id
 
 		response = await fetch(
-			`${process.env.REACT_APP_BACKEND}/campaigns/${id}/messages`,
+			`${process.env.REACT_APP_BACKEND}/campaigns/${room.id}/messages`,
 			{
 				method: "GET",
 				credentials: "include",
@@ -112,11 +104,12 @@ const Chat = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
 
-	useEffect(() => {})
-
 	useEffect(() => {
 		console.log("this should connect to the backend")
 		console.log("scene saved", scene)
+		console.log("7#scene owner", scene.owner)
+		console.log("7#my id", localStorage.getItem("id"))
+		setGm(scene.owner === localStorage.getItem("id") ? true : false)
 	}, [scene])
 
 	const toggleCharacterInRecipients = (character) => {
@@ -202,12 +195,31 @@ const Chat = () => {
 	})
 	return (
 		<div className="flex flex-col h-full p-2 bg-gray-900">
-			<a
-				href="/Campaigns"
-				className="absolute bg-gray-900 rounded-br-full text-yellow-400 px-4 py-1"
-			>
-				back to dashboard
-			</a>
+			<div className="sticky bg-gray-900 text-yellow-400 pr-8 py-1 flex gap-2 items-center flex-wrap-reverse">
+				<a href="/Campaigns">back</a>
+				<input
+					type="search"
+					value={filter}
+					onChange={(e) => setFilter(e.target.value)}
+					className="p-0.5 rounded-sm"
+					placeholder="search"
+				/>
+				<button
+					className={`${
+						PMonly
+							? "text-red-500 hover:text-white px-2"
+							: "text-white hover:text-red-500 px-2"
+					}`}
+					onClick={() => setPMonly(!PMonly)}
+				>
+					PM only
+				</button>
+				<div className="flex-grow"></div>
+				<p>
+					Argo://{campaignName && campaignName + "/"}
+					{scene.name}
+				</p>
+			</div>
 			<div
 				className={`border-light-blue-500 overflow-y-hidden bg-gray-600 ${
 					roller ? "h-3/5" : "h-full"
@@ -216,17 +228,27 @@ const Chat = () => {
 				<div className="h-full flex flex-row overflow-y-hidden">
 					<div
 						id="Inbox"
-						className="flex-grow px-2 border-r-4 flex flex-col overflow-scroll scrollbar-thin scrollbar-thin-light scrollbar-thumb-yellow-600 w-max overflow-x-hidden"
+						className={`flex-grow px-2 border-r-4 flex flex-col overflow-scroll scrollbar-thin scrollbar-thin-light scrollbar-thumb-yellow-600 overflow-x-hidden ${borderColor()}`}
 						ref={messageEl}
 					>
 						{messages.length > 0 &&
-							messages.map((element, index) => (
-								<Message element={element} key={`message-${index}`} />
-							))}
+							messages
+								.filter((message) => {
+									if (PMonly && !message.hasOwnProperty("toPlayers"))
+										return false
+									if (filter === "") return true
+									return message.splitted
+										.join()
+										.toLowerCase()
+										.includes(filter.toLowerCase())
+								})
+								.map((element, index) => (
+									<Message element={element} key={`message-${index}`} />
+								))}
 					</div>
 					<div
 						id="entitySelector"
-						className="box-content flex flex-col items-center h-full overflow-y-scroll scrollbar-thin scrollbar-thumb-yellow-600 w-26"
+						className="flex flex-col items-center h-full overflow-y-scroll scrollbar-thin scrollbar-thumb-yellow-600 min-w-max"
 					>
 						{scene.members &&
 							scene.members.map((player) => (
@@ -269,7 +291,10 @@ const Chat = () => {
 									: ""
 							)}
 
-						<div id="separator" className="border-solid border-t-4"></div>
+						<div
+							id="separator"
+							className={`border-solid border-b-4 w-full flex-grow ${borderColor()}`}
+						></div>
 						{user &&
 							user.characters &&
 							user.characters.map((character) => (
@@ -288,41 +313,107 @@ const Chat = () => {
 									}
 								/>
 							))}
-						{user && (
-							<img
-								src={
-									user.imageUrl ||
-									"https://res.cloudinary.com/ratanax/image/upload/v1616546238/rpgTool/scenes/ttlrrin7qj3visuxtxyh.jpg"
-								}
-								title={user.name}
-								alt={user.name}
-								className={
-									identity._id === user._id
-										? "w-20 h-20 m-3 rounded-full ring-4 ring-green-400 object-scale-down bg-gray-500 "
-										: "w-20 h-20 rounded-full m-3 object-scale-down bg-gray-500 "
-								}
-								onClick={(e) => {
-									impersonate(user)
-								}}
-							/>
-						)}
 					</div>
 				</div>
 			</div>
 			{/* collapsible dice roller*/}
 			<div
-				className={`  text-gray-300 border-t-4 overflow-y-hidden ${
-					roller ? "visible h-2/5 bottom-0" : "invisible h-0"
+				className={`  text-gray-300  overflow-y-hidden ${
+					roller
+						? `visible ${
+								bottomTraySize === "h-2/5"
+									? "h-2/5"
+									: "fixed h-screen w-full top-0 bg-gray-900"
+						  } bottom-0 border-t-4 ${borderColor()}`
+						: "invisible h-0"
 				}`}
 			>
+				<div className="flex">
+					<button
+						onClick={() =>
+							setBottomTraySize(
+								bottomTraySize === "h-2/5" ? "h-screen" : "h-2/5"
+							)
+						}
+						className={` hover:bg-white hover:text-black flex-grow ${
+							bottomTraySize === "h-2/5"
+								? "bg-white text-black"
+								: "bg-green-400 text-white"
+						}`}
+					>
+						{bottomTraySize === "h-2/5" ? "FULLSCREEN" : "REDUCE"}
+					</button>
+					{identity.sheet && (
+						<button onClick={() => setIdentity(user)}>close sheet</button>
+					)}
+				</div>
 				{sheet ? (
-					<CharacterSheet sheet={test} send={quickRoll} />
+					identity.sheet ? (
+						<CharacterSheet sheet={identity.sheet} send={quickRoll} />
+					) : (
+						<div className="overflow-y-scroll scrollbar-thin scrollbar-thumb-yellow-600">
+							<div className="flex mt-0.5">
+								{gm && (
+									<button
+										onClick={() => setCharactersPage("PC")}
+										className={` w-10 hover:bg-white hover:text-black ${
+											charactersPage === "PC"
+												? "bg-white text-black"
+												: "bg-black text-white"
+										}`}
+									>
+										PC
+									</button>
+								)}
+								<button
+									onClick={() => setCharactersPage("NPC")}
+									className={` w-10 hover:bg-white hover:text-black ${
+										charactersPage === "NPC"
+											? "bg-white text-black"
+											: "bg-black text-white"
+									}`}
+								>
+									{gm ? "NPC" : "PC"}
+								</button>
+								<div className="flex-grow ml-2">
+									Click on a character to see their character sheet
+								</div>
+							</div>
+							{scene.members &&
+								charactersPage === "PC" &&
+								scene.members.map((player) => (
+									<div className="flex flex-wrap flex-row border-2 p-2 border-white items-center">
+										<div className=" border-r-2 pr-2 border-white">
+											<p>owner</p>
+											<MicroElement entry={player} />
+										</div>
+
+										{player.characters.map((character) => (
+											<MicroElement
+												entry={character}
+												action={() => impersonate(character)}
+											/>
+										))}
+									</div>
+								))}
+							{scene.members && charactersPage === "NPC" && (
+								<div className="flex flex-wrap flex-row border-2 p-2">
+									{user.characters.map((character) => (
+										<MicroElement
+											entry={character}
+											action={() => impersonate(character)}
+										/>
+									))}
+								</div>
+							)}
+						</div>
+					)
 				) : (
 					<DiceRoller appendInput={appendInput} />
 				)}
 			</div>
 			<form
-				className="flex bg-gray-600 items-center border-t-4 "
+				className={`flex bg-gray-50 items-center border-t-4 ${borderColor()}`}
 				onSubmit={(e) => {
 					e.preventDefault()
 					setSend(!send)
@@ -351,7 +442,7 @@ const Chat = () => {
 						cy="256"
 						r="256"
 						fill="#000000"
-						fill-opacity="1"
+						fillOpacity="1"
 					></circle>
 					<g className="" transform="translate(0,0)">
 						<path
@@ -376,7 +467,7 @@ const Chat = () => {
 						cy="256"
 						r="256"
 						fill="#000000"
-						fill-opacity="1"
+						fillOpacity="1"
 					></circle>
 					<g transform="translate(0,0)">
 						<path
@@ -416,7 +507,7 @@ const Chat = () => {
 								8.1-5-14.4 0-30.5 7-43.5 5.7-6.2 9.9 4.4 8.9 8.9zM59.93 245.5c.59.1 1.34 
 								1 2.48 3.6v61.1c-7.3-7-4.47-18-4.45-26.4 0-8.4 1.65-16.3-1.28-23.2-4.62-1.7-5.79-17-3.17-12.7 4.41 4.8 4.66-2.7 6.42-2.4zm178.77 7.6c8.1 4.5 13.8 14.4 10.8 23.6-2.1 15.2-27 21.1-30.4 29.7-1.2 3 25.4 1.6 30.2 1.6.5 4 1.5 10.7-3.8 11.7-14.5-1.2-29.9-.6-45.1-.6.4-11.2 7.4-21.3 17-26.8 6.9-4.9 15.4-9.3 18.1-17.9 1.8-4.5-.6-9.3-4.6-11.5-4.2-2.9-11-2.3-13.2 2.7-2 3.8-4.4 9.1-8.7 9.6-2.9.4-9 .5-7.2-4.9 1.4-5.6 3.4-11.5 8.2-15.2 8.8-6.3 19.9-6.7 28.7-2zm53.3-1.4c6.8 2.2 12 7.9 14.3 14.6 6.1 14.7 5.5 33.1-4.4 45.9-4.5 4.8-10.2 9.1-17 9.1-12.5-.1-22.4-11.1-24.8-22.8-3.1-13.4-1.8-28.7 6.9-39.8 6.8-7.6 16-10.3 25-7zm156.1 8.1c-1.6 5.9-3.3 13.4-.7 19.3 5.1-2 5.4-9.6 6.6-14.5.9-6.1-3.5-12.6-5.9-4.8zm-176.2 21.1c.6 10.5 1.7 22.8 9.7 28.2 4.9 1.8 9.7-2.2 11.1-6.7 1.9-6.3 2.3-12.9 2.4-19.4-.2-7.1-1.5-15-6.7-20.1-12.2-4.4-15.3 10.9-16.5 18zM434 266.8V328l-4.4 6.7v-42.3c-4.6 7.5-9.1 9.1-6.1-.9 6.1-7.1 4.8-17.4 10.5-24.7zM83.85 279c.8 3.6 5.12 17.8 2.04 14.8-1.97-1.3-3.62-4.9-3.41-6.1-1.55-3-2.96-6.1-4.21-9.2-2.95 4-3.96 8.3-3.14 13.4.2-1.6 1.18-2.3 3.39-.7 7.84 12.6 12.17 29.1 7.29 43.5l-2.22 1.1c-10.36-5.8-11.4-19.4-13.43-30-1.55-12.3-.79-24.7 2.3-36.7 5.2-3.8 9.16 5.4 11.39 9.9zm-7.05 20.2c-4.06 4.7-2.26 12.8-.38 18.4 1.11 5.5 6.92 10.2 6.06 1.6.69-11.1-2.33-12.7-5.68-20zm66.4 69.4L256 491.7l112.8-123.1zm-21.4.3l-53.84 4.9 64.24 41.1c-2.6-2.7-4.9-5.7-7.1-8.8-5.2-6.9-10.5-13.6-18.9-16.6-8.75-6.5-4.2-5.3 2.9-2.6-1-1.8-.7-2.6.1-2.6 2.2-.2 8.4 4.2 9.8 6.3l24.7 31.6 65.1 41.7zm268.4 0l-42.4 46.3c6.4-3.1 11.3-8.5 17-12.4 2.4-1.4 3.7-1.9 4.3-1.9 2.1 0-5.4 7.1-7.7 10.3-9.4 9.8-16 23-28.6 29.1l18.9-24.5c-2.3 1.3-6 3.2-8.2 4.1l-40.3 44 74.5-47.6c5.4-6.7 1.9-5.6-5.7-.9l-11.4 6c11.4-13.7 30.8-28.3 40-35.6 9.2-7.3 15.9-9.8 8.2-1.5l-12.6 16c10-7.6.9 3.9-4.5 5.5-.7 1-1.4 2-2.2 2.9l54.5-34.9zM236 385.8v43.4h-13.4v-30c-5-1.4-10.4 1.7-15.3-.3-3.8-2.9 1-6.8 4.5-5.9 3.3-.1 7.6.2 9.3-3.2 4.4-4.5 9.6-4.4 14.9-4zm29 .5c12.1 1.2 24.2.6 36.6.6 1.5 3 .8 7.8-3.3 7.9-7.7.3-21-1.6-25.9.6-8.2 10.5 5.7 3.8 11.4 5.2 7 1.1 15 2.9 19.1 9.2 2.1 3.1 2.7 7.3.7 10.7-5.8 6.8-17 11.5-25.3 10.9-7.3-.6-15.6-1.1-20.6-7.1-6.4-10.6 10.5-6.7 12.2-3.2 6 5.3 20.3 1.9 20.7-4.7.6-4.2-2.1-6.3-6.9-7.8-4.8-1.5-12.6 1-17.3 1.8-4.7.8-9.6.5-9-4.4.8-4.2 2.7-8.1 2.7-12.5.1-3 1.7-7 4.9-7.2zm133.5 5c-.2-.2-7 5.8-9.9 8.1l-15.8 13.1c10.6-6.5 19.3-12 25.7-21.2zm-247 14.2c2.4 0 7.5 4.6 9.4 7l26.1 31.1c-7.7-2.1-13.3-7.1-17.6-13.7-6.5-7.3-11.3-16.6-21.2-19.6-9-5-5.2-6.4 2.1-2.2-.3-1.9.2-2.6 1.2-2.6z"
 							fill="#fff"
-							fill-opacity="1"
+							fillOpacity="1"
 						></path>
 					</g>
 				</svg>

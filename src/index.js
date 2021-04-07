@@ -6,19 +6,17 @@ import reportWebVitals from "./reportWebVitals"
 import Login from "./Components/Login"
 import Register from "./Components/register"
 import Chat from "./Components/Chat"
-import Scenes from "./Components/Scenes"
-import Scene from "./Components/Scenes/scene"
-import Campaigns from "./Components/Campaigns"
-import Campaign from "./Components/Campaigns/Campaign"
-import Characters from "./Components/Characters"
-//import NavBar from "./Components/Navbar"
-import Dashboard from "./Components/Dashboard"
+import Character from "./Components/Characters/editSheet"
+import TemplateMaker from "./Components/TemplateMaker"
+import Manager from "./Components/Element manager"
+import Invites from "./Components/Element manager/Invites"
 
 console.log("backend at", process.env.REACT_APP_BACKEND)
 
 ReactDOM.render(
 	<BrowserRouter>
 		<React.StrictMode>
+			{/* auth routes */}
 			<Route exact path="/">
 				<Login />
 			</Route>
@@ -28,32 +26,37 @@ ReactDOM.render(
 			<Route exact path="/register">
 				<Register />
 			</Route>
-			<Route path="/chat/:id">
+			{/* chat routes */}
+			<Route exact path="/chat/:campaignName/:sceneId">
 				<Chat />
 			</Route>
-			<Route exact path="/chat">
+			<Route exact path="/chat/:id">
 				<Chat />
 			</Route>
-			<Route exact path="/dashboard">
-				<Dashboard />
-			</Route>
+			{/* campaign routes */}
 			<Route exact path="/campaigns">
-				<Campaigns />
+				<Manager mode="campaigns" />
 			</Route>
 			<Route exact path="/campaign/:id">
-				<Campaign />
+				<Invites />
 			</Route>
-			<Route exact path="/scenes">
-				<Scenes />
+			{/* scene routes */}
+			<Route exact path="/scenes/:campaignId">
+				<Manager mode="scenes" />
 			</Route>
-			<Route exact path="/scenes/:id">
-				<Scenes />
+			<Route path="/scene/:campaignId/:id">
+				<p>invite manager should render here</p>
+				<Invites />
 			</Route>
-			<Route path="/scene/:id">
-				<Scene />
-			</Route>
+			{/* character Routes */}
 			<Route exact path="/characters">
-				<Characters />
+				<Manager mode="characters" />
+			</Route>
+			<Route exact path="/character/:characterId">
+				<Character />
+			</Route>
+			<Route exact path="/templatemaker">
+				<TemplateMaker />
 			</Route>
 		</React.StrictMode>
 	</BrowserRouter>,

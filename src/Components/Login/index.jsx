@@ -10,9 +10,32 @@ const Login = () => {
 	const [send, setSend] = useState(true)
 	let history = useHistory()
 
+	useEffect(() => {
+		const checklogin = async () => {
+			console.log("before the fech")
+			try {
+				let response = await fetch(`${process.env.REACT_APP_BACKEND}/users/`, {
+					method: "GET",
+					credentials: "include",
+					headers: new Headers({
+						"Content-Type": "application/json",
+					}),
+				})
+
+				if (response.status === 200) {
+					history.push("/campaigns")
+				} else console.log("not logged in")
+			} catch (error) {
+				console.log("not logged in", error)
+			}
+		}
+		console.log("component did mount")
+		checklogin()
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
+
 	useEffect(
 		() => async () => {
-			console.log("password:", password)
 			console.log("here goeas the fetch, in theory at least")
 			//const body = { email, password }
 			try {
@@ -24,12 +47,12 @@ const Login = () => {
 						"Content-Type": "application/json",
 					}),
 				})
-				me = await me.json()
-				console.log(me)
-				localStorage.setItem("id", me.id)
-
-				history.push("/campaigns")
-
+				if (me.status === 200) {
+					me = await me.json()
+					console.log(me)
+					localStorage.setItem("id", me.id)
+					history.push("/campaigns")
+				}
 			} catch (error) {
 				console.log(error)
 			}
@@ -67,11 +90,21 @@ const Login = () => {
 					}}
 					className="m-1 p-2"
 				/>
-
-				<button type="submit" className="m-1 mx-auto p-2 w-min text-green-500">
-
-					Login
-				</button>
+				<div className="flex items-center">
+					<button
+						type="submit"
+						className="m-1 mx-auto p-2 w-min text-green-500 hover:text-white"
+					>
+						Login
+					</button>
+					<p className="font-bold text-green-500">or</p>
+					<a
+						href="register"
+						className="m-1 mx-auto p-2 w-min text-green-500 hover:text-white"
+					>
+						Register
+					</a>
+				</div>
 			</form>
 		</div>
 	)
