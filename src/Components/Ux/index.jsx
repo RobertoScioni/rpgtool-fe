@@ -16,6 +16,19 @@ const UxButton = (props) => {
 	)
 }
 
+const Modal = (props) => {
+	return (
+		<div className="h-screen w-screen fixed flex justify-items-center items-center">
+			<div>
+				<div className="flex justify-items-center">
+					<p>{props.title}</p>
+				</div>
+				<div className=" border-t-2 border-b-2 ">{props.children}</div>
+			</div>
+		</div>
+	)
+}
+
 const RemoveEntry = (props) => {
 	return (
 		<UxButton title="Remove" {...props}>
@@ -83,4 +96,11 @@ const CharacterSheet = (props) => {
 	)
 }
 
-export { OpenGame, ManageScenes, ManagePlayers, RemoveEntry, CharacterSheet }
+export {
+	OpenGame,
+	ManageScenes,
+	ManagePlayers,
+	RemoveEntry,
+	CharacterSheet,
+	Modal,
+}

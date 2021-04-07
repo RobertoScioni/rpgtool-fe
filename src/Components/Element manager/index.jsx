@@ -9,7 +9,7 @@
 import { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
 import { Helmet } from "react-helmet"
-import * as Buttons from "../buttons"
+import * as Buttons from "../Ux"
 import Element from "../element2"
 import MicroElement from "../microElement"
 import * as fetches from "../fetches"
@@ -71,6 +71,8 @@ const Manager = (props) => {
 
 	const createElement = async (entry, mode) => {
 		console.log("entry ", entry)
+		entry = mode === "campaigns" ? { ...entry, members: [{ ...me }] } : entry
+		console.log("entry modified", entry)
 		try {
 			let newOne = await fetches.createOrUpdate(entry, mode)
 			if (!entry._id) {
@@ -160,7 +162,7 @@ const Manager = (props) => {
 
 			<div className=" ml-4 pb-4 flex flex-wrap justify-items-center gap-4">
 				<Element
-					save={createElement /* fetches.createOrUpdate */}
+					save={createElement}
 					mode={mode}
 					entry={campaignId ? { campaign } : "undefined"}
 					placeholder="New Campaign"

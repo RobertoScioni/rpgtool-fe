@@ -79,6 +79,7 @@ const createOrUpdate = async (entry, mode) => {
 			console.log(response)
 		}
 		console.log("updated body with image", body)
+		if (!body._id) body._id = _id
 		return body
 	} catch (error) {
 		console.log(error)
