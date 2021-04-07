@@ -4,7 +4,7 @@ import Message from "./message"
 import DiceRoller from "./diceRoller"
 import CharacterSheet from "./characterSheet"
 import MicroElement from "../microElement"
-import * as UX from "../Ux"
+//import * as UX from "../Ux"
 import io from "socket.io-client"
 const connOptions = {
 	transports: ["websocket", "polling"],

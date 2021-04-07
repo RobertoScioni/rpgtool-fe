@@ -11,27 +11,6 @@ const Campaign = (props) => {
 	const [characters, setCharacters] = useState([])
 	const [filter, setFilter] = useState("")
 
-	const getPlayers = async () => {
-		let response = await fetch(`${process.env.REACT_APP_BACKEND}/users/`, {
-			method: "GET",
-			credentials: "include",
-			headers: new Headers({
-				"Content-Type": "application/json",
-			}),
-		})
-		response = await response.json()
-		response = response.filter((user) => {
-			return !players.some((player) => {
-				if (player._id === user._id) {
-					player.characters = user.characters
-					return true
-				} else return false
-			})
-		})
-		setUsers([...response])
-		console.log("campaigns", users)
-	}
-
 	const save = async () => {
 		console.log("save the campaign")
 		const container = { ...campaign }
@@ -111,6 +90,10 @@ const Campaign = (props) => {
 		console.log("id ", id, "campaignID ", campaignId)
 		//getCampaign()
 		const get = async () => {
+			//retrieve platform users
+			let usrs = await fetches.get("users")
+			setUsers(usrs)
+
 			let response = await fetches.get(
 				`${campaignId ? "scenes" : "campaigns"}/${id}`
 			)
@@ -136,8 +119,17 @@ const Campaign = (props) => {
 	}, [])
 
 	useEffect(() => {
-		getPlayers()
-
+		//getPlayers()
+		let usrs = [...users].filter((user) => {
+			return !players.some((player) => {
+				if (player._id === user._id) {
+					player.characters = user.characters
+					return true
+				} else return false
+			})
+		})
+		console.log("users", users, "usrs", usrs)
+		setUsers(usrs)
 		console.log("players changed", players)
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [players])
