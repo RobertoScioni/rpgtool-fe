@@ -37,7 +37,7 @@ const createOrUpdate = async (entry, mode) => {
 		}
 		let _id = await fetch(
 			`${process.env.REACT_APP_BACKEND}/${address}/${
-				entry._id ? entry._id : ""
+				entry._id && mode !== "users/me" ? entry._id : ""
 			}`,
 			{
 				method: `${entry._id ? "PUT" : "POST"}`,

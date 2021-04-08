@@ -8,7 +8,7 @@
  */
 import { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
-import Element from "../element2"
+import Element from "../element"
 import MicroElement from "../microElement"
 
 const getCharacter = async (character) => {

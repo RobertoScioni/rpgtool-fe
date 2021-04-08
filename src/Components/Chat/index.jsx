@@ -6,6 +6,7 @@ import CharacterSheet from "./characterSheet"
 import MicroElement from "../microElement"
 //import * as UX from "../Ux"
 import io from "socket.io-client"
+import Navbar from "../navbar"
 const connOptions = {
 	transports: ["websocket", "polling"],
 	query: { db_id: localStorage.getItem("id") },
@@ -195,30 +196,30 @@ const Chat = () => {
 	})
 	return (
 		<div className="flex flex-col h-full p-2 bg-gray-900">
-			<div className="sticky bg-gray-900 text-yellow-400 pr-8 py-1 flex gap-2 items-center flex-wrap-reverse">
-				<a href="/Campaigns">back</a>
-				<input
-					type="search"
-					value={filter}
-					onChange={(e) => setFilter(e.target.value)}
-					className="p-0.5 rounded-sm"
-					placeholder="search"
-				/>
-				<button
-					className={`${
-						PMonly
-							? "text-red-500 hover:text-white px-2"
-							: "text-white hover:text-red-500 px-2"
+			<div className="sticky">
+				<Navbar
+					path={`playing/${campaignName ? campaignName + "/" : ""}${
+						scene.name
 					}`}
-					onClick={() => setPMonly(!PMonly)}
 				>
-					PM only
-				</button>
-				<div className="flex-grow"></div>
-				<p>
-					Argo://{campaignName && campaignName + "/"}
-					{scene.name}
-				</p>
+					<input
+						type="search"
+						value={filter}
+						onChange={(e) => setFilter(e.target.value)}
+						className="p-0.5 rounded-sm"
+						placeholder="search"
+					/>
+					<button
+						className={`${
+							PMonly
+								? "text-red-500 hover:text-white px-2"
+								: "text-white hover:text-red-500 px-2"
+						}`}
+						onClick={() => setPMonly(!PMonly)}
+					>
+						PM only
+					</button>
+				</Navbar>
 			</div>
 			<div
 				className={`border-light-blue-500 overflow-y-hidden bg-gray-600 ${

@@ -10,17 +10,16 @@ import { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
 import { Helmet } from "react-helmet"
 import * as Buttons from "../Ux"
-import Element from "../element2"
-import MicroElement from "../microElement"
+import Element from "../element"
 import * as fetches from "../fetches"
 import { useHistory } from "react-router-dom"
+import Navbar from "../navbar"
 
 const Manager = (props) => {
 	const [campaigns, setCampaigns] = useState([])
 	const [campaign, setCampaign] = useState({})
 	const [templates, setTemplates] = useState([])
 	const [me, setMe] = useState({})
-	const [editProfile, setEditProfile] = useState(false)
 	const [reload, setReload] = useState(false)
 	const [remove, setRemove] = useState("")
 	const { campaignId } = useParams()
@@ -33,40 +32,6 @@ const Manager = (props) => {
 		setCampaigns(campaigns.filter((element) => element._id !== entry._id))
 		setRemove(false)
 		setReload(!reload)
-	}
-
-	const saveMe = async (entry) => {
-		console.log(
-			"********************************************************************************"
-		)
-		console.log("entry ", entry)
-		try {
-			let id = await fetch(`${process.env.REACT_APP_BACKEND}/users/me`, {
-				method: `PUT`,
-				credentials: "include",
-				body: JSON.stringify({ name: entry.name, dsc: entry.dsc }),
-				headers: new Headers({
-					"Content-Type": "application/json",
-				}),
-			})
-			id = entry._id
-			console.log(id)
-			const formData = new FormData()
-			formData.append("image", entry.file, entry.file.name)
-			let response = await fetch(
-				`${process.env.REACT_APP_BACKEND}/users/imageUpload/me`,
-				{
-					method: "POST",
-					credentials: "include",
-					body: formData,
-					headers: new Headers({}),
-				}
-			)
-			console.log("response", response)
-			setReload(!reload)
-		} catch (error) {
-			console.log(error)
-		}
 	}
 
 	const createElement = async (entry, mode) => {
@@ -115,51 +80,7 @@ const Manager = (props) => {
 				<title>Argo/{mode}</title>
 				<meta name={mode} content="" />
 			</Helmet>
-			<div className="flex justify-between mb-5 bg-gray-600 p-1 px-4">
-				<div className="flex">
-					<div
-						onClick={() => {
-							setEditProfile(!editProfile)
-						}}
-					>
-						<MicroElement entry={me} />
-					</div>
-					<div
-						className={`fixed top-24 shadow-md p-2 rounded-md bg-yellow-400 ${
-							!editProfile ? "hidden" : ""
-						}`}
-					>
-						<Element entry={me} save={saveMe} edit={true} />
-					</div>
-					<p className=" text-yellow-500 bold">My {mode} Manager</p>
-				</div>
-
-				<div className="p-2">
-					<div>
-						<a
-							className=" self-end"
-							href={
-								mode === "characters" || mode === "scenes"
-									? "/campaigns"
-									: "/characters"
-							}
-						>
-							<span className=" text-green-500 bold">
-								Manage{" "}
-								{mode === "characters" || mode === "scenes"
-									? "Campaigns"
-									: "Characters"}
-							</span>
-						</a>
-					</div>
-					<div>
-						<a href="/templatemaker">
-							<span>Sheet creator</span>
-						</a>
-					</div>
-				</div>
-			</div>
-
+			<Navbar path={mode} />
 			<div className=" ml-4 pb-4 flex flex-wrap justify-items-center gap-4">
 				<Element
 					save={createElement}
