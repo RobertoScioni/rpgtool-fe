@@ -185,6 +185,7 @@ const Chat = () => {
 				as: identity,
 			})
 			console.log("if you are reading this emit did not cause a crash")
+			setInput("")
 			setSend(!send)
 			//console.log(socket)
 		}
