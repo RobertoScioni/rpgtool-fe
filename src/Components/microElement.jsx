@@ -1,22 +1,21 @@
 const MicroElement = (props) => {
 	return (
 		<div
-			className="h-20 w-20 relative bg-gray-400 m-1 text-indigo-200 ring-1 ring-gray-100 rounded-sm bold text-center cursor-pointer overflow-clip"
+			className="h-20 w-20 relative bg-gray-400 font-black m-1 text-indigo-200 ring-1 ring-gray-100 rounded-sm bold text-center cursor-pointer overflow-clip"
 			onClick={(e) => {
 				if (props.action) props.action(props.entry)
 			}}
 		>
-			<div className="h-20 w-20 relative bg-gray-400 flex justify-center items-center">
+			<div className="h-20 w-20 relative bg-gray-700 flex justify-center items-center">
 				<img
-					src={
-						props.entry.imageUrl ||
-						"https://res.cloudinary.com/ratanax/image/upload/v1616546238/rpgTool/scenes/ttlrrin7qj3visuxtxyh.jpg"
-					}
-					className="object-scale-down max-w-full max-h-full p-2"
+					src={props.entry.imageUrl}
+					className={`object-scale-down max-w-full max-h-full p-2 ${
+						!props.entry.imageUrl && "hidden"
+					}`}
 					alt="avatar"
 				></img>
 			</div>
-			<div className="absolute inset-x-0 mx-auto -mt-12 text-overlay">
+			<div className="absolute inset-x-0 mx-auto -mt-12 text-overlay break-words">
 				{props.entry.name}
 			</div>
 			{props.selected && (

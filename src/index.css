@@ -5,7 +5,6 @@
 .text-overlay {
 	/* text-shadow: 2px 2px 1px white; */
 	color: black;
-	font-weight: bold;
 	-webkit-text-fill-color: black; /* Will override color (regardless of order) */
 	-webkit-text-stroke-width: 1px;
 	-webkit-text-stroke-color: white;
