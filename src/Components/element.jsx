@@ -91,65 +91,67 @@ const Element = (props) => {
 				<div
 					className={`w-20 ml-2 flex flex-row flex-wrap gap-2 h-28 max-h-28 justify-items-start`}
 				>
-					{props.entry && props.entry.owner === localStorage.getItem("id") && (
-						<button
-							className="h-8 w-8 m2 align-top "
-							onClick={(e) => {
-								if (edit) {
-									let save = {
-										name,
-										dsc,
-										file,
+					{!props.entry ||
+						(props.entry.owner === localStorage.getItem("id") && (
+							<button
+								className="h-8 w-8 m2 align-top "
+								onClick={(e) => {
+									if (edit) {
+										let save = {
+											name,
+											dsc,
+											file,
+										}
+										if (props.entry._id) save._id = props.entry._id
+										if (props.entry.campaign)
+											save.campaign = props.entry.campaign
+										if (sheetIndex >= 0)
+											save.sheet = props.templates[sheetIndex].sheet
+										console.log("after checking sheetIndex - ", save)
+										props.save(save, props.mode)
+										if (!props.entry._id) setFile([])
+										if (props.placeholder) {
+											setName("")
+											setDsc("")
+										}
+										setEdit(props.entry ? false : true)
+									} else {
+										setEdit(true)
 									}
-									if (props.entry._id) save._id = props.entry._id
-									if (props.entry.campaign) save.campaign = props.entry.campaign
-									if (sheetIndex >= 0)
-										save.sheet = props.templates[sheetIndex].sheet
-									console.log("after checking sheetIndex - ", save)
-									props.save(save, props.mode)
-									if (!props.entry._id) setFile([])
-									if (props.placeholder) {
-										setName("")
-										setDsc("")
-									}
-									setEdit(props.entry ? false : true)
-								} else {
-									setEdit(true)
-								}
-							}}
-						>
-							{edit ? (
-								<svg
-									className="h-8 w-8 text-yellow-800"
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									strokeWidth="2"
-									strokeLinecap="round"
-									strokeLinejoin="round"
-								>
-									{" "}
-									<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />{" "}
-									<polyline points="17 21 17 13 7 13 7 21" />{" "}
-									<polyline points="7 3 7 8 15 8" />
-								</svg>
-							) : (
-								<svg
-									className="h-8 w-8 text-yellow-800"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-								>
-									<path
+								}}
+							>
+								{edit ? (
+									<svg
+										className="h-8 w-8 text-yellow-800"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										strokeWidth="2"
 										strokeLinecap="round"
 										strokeLinejoin="round"
-										strokeWidth="2"
-										d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-									/>
-								</svg>
-							)}
-						</button>
-					)}
+									>
+										{" "}
+										<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />{" "}
+										<polyline points="17 21 17 13 7 13 7 21" />{" "}
+										<polyline points="7 3 7 8 15 8" />
+									</svg>
+								) : (
+									<svg
+										className="h-8 w-8 text-yellow-800"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke="currentColor"
+									>
+										<path
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											strokeWidth="2"
+											d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+										/>
+									</svg>
+								)}
+							</button>
+						))}
 					{props.children}
 				</div>
 			</div>
