@@ -82,13 +82,15 @@ const Manager = (props) => {
 			</Helmet>
 			<Navbar path={mode} />
 			<div className=" ml-4 pb-4 flex flex-wrap justify-items-center gap-4">
-				<Element
-					save={createElement}
-					mode={mode}
-					entry={campaignId ? { campaign } : "undefined"}
-					placeholder="New Campaign"
-					templates={templates}
-				/>
+				{(!campaignId || campaign.owner === localStorage.getItem("id")) && (
+					<Element
+						save={createElement}
+						mode={mode}
+						entry={campaignId ? { campaign } : "undefined"}
+						placeholder="New Campaign"
+						templates={templates}
+					/>
+				)}
 				{campaigns &&
 					campaigns.length > 0 &&
 					campaigns.map((element, index) => (
@@ -98,7 +100,10 @@ const Manager = (props) => {
 							save={createElement}
 							key={`element-${index}`}
 						>
-							<Buttons.RemoveEntry onClick={() => setRemove(element)} />
+							{" "}
+							{element.owner === localStorage.getItem("id") && (
+								<Buttons.RemoveEntry onClick={() => setRemove(element)} />
+							)}
 							{(mode === "campaigns" || mode === "scenes") && (
 								<>
 									<Buttons.OpenGame
@@ -106,11 +111,13 @@ const Manager = (props) => {
 											mode === "scenes" ? "/" + campaign.name : ""
 										}/${element._id}`}
 									/>
-									<Buttons.ManagePlayers
-										href={`/${
-											mode === "scenes" ? "scene/" + campaign._id : "campaign"
-										}/${element._id}`}
-									/>
+									{element.owner === localStorage.getItem("id") && (
+										<Buttons.ManagePlayers
+											href={`/${
+												mode === "scenes" ? "scene/" + campaign._id : "campaign"
+											}/${element._id}`}
+										/>
+									)}
 									{mode === "campaigns" && (
 										<Buttons.ManageScenes href={`/scenes/${element._id}`} />
 									)}
