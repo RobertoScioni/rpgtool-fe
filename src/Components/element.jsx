@@ -92,6 +92,7 @@ const Element = (props) => {
 					className={`w-20 ml-2 flex flex-row flex-wrap gap-2 h-28 max-h-28 justify-items-start`}
 				>
 					{(props.entry.owner === localStorage.getItem("id") ||
+						props.entry._id === localStorage.getItem("id") ||
 						props.placeholder) && (
 						<button
 							className="h-8 w-8 m2 align-top "
