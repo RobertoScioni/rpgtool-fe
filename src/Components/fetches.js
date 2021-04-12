@@ -54,7 +54,9 @@ const createOrUpdate = async (entry, mode) => {
 			const formData = new FormData()
 			formData.append("image", entry.file, entry.file.name)
 			let response = await fetch(
-				`${process.env.REACT_APP_BACKEND}/${address}/imageUpload/${_id}`,
+				`${process.env.REACT_APP_BACKEND}/${
+					address === "users/me" ? "users" : address
+				}/imageUpload/${address === "users/me" ? "me" : _id}`,
 				{
 					method: "POST",
 					credentials: "include",
