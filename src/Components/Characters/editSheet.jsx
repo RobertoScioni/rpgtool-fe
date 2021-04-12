@@ -355,6 +355,13 @@ const EditSheet = (props) => {
 														<textarea
 															placeholder="Description"
 															className="resize-none h-full w-full bg-gray-200"
+															value={macro.dsc}
+															onChange={(e) => {
+																handleSheet(
+																	["Pages", page, index, "dsc"],
+																	e.target.value
+																)
+															}}
 														></textarea>
 													</div>
 												</div>
