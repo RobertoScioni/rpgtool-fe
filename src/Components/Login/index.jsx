@@ -47,7 +47,7 @@ const Login = () => {
 						"Content-Type": "application/json",
 					}),
 				})
-				if (me.status === 200) {
+				if (me.ok) {
 					me = await me.json()
 					console.log(me)
 					localStorage.setItem("id", me.id)

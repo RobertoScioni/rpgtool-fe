@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import * as fetches from "./fetches"
 import Element from "./element"
 const Navbar = (props) => {
-	const [me, setME] = useState({})
+	const [me, setME] = useState(false)
 	const [menu, setMenu] = useState(false)
 	const [editMe, setEditMe] = useState(false)
 	const pages = [
@@ -23,12 +23,16 @@ const Navbar = (props) => {
 
 	useEffect(() => {
 		const get = async () => {
-			const response = await fetches.get("users/me")
-			console.log("navbar did mount", response, Location)
-			setME(response)
+			if (!me) {
+				try {
+					const response = await fetches.get("users/me")
+					console.log("navbar did mount", response, Location)
+					setME(response)
+				} catch (error) {}
+			}
 		}
 		get()
-	}, [])
+	})
 	return (
 		<div className="mb-2">
 			<div
