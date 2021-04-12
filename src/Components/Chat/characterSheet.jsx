@@ -119,6 +119,16 @@ const CharacterSheet = (props) => {
 										...
 									</button>
 								)}
+								{props.delete && (
+									<button
+										onClick={() => {
+											props.delete(page, index)
+										}}
+										className="mx-1 px-1.5 text-justify align-middle rounded-full bg-gray-500 hover:text-red-500"
+									>
+										x
+									</button>
+								)}
 							</div>
 						)
 					})}

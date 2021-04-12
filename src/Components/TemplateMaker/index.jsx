@@ -49,6 +49,16 @@ const TemplateMaker = (props) => {
 		}
 	}
 
+	const handleDelete = (page, Eindex) => {
+		if (Eindex !== index) {
+			const target = { ...pages }
+			target[page].splice(Eindex, 1)
+			setPages(target)
+		} else {
+			setIndex(-1)
+		}
+	}
+
 	const clearForm = () => {
 		setName("")
 		setMacro("")
@@ -356,6 +366,7 @@ const TemplateMaker = (props) => {
 									<CharacterSheet
 										sheet={sheet}
 										edit={handleEdit}
+										delete={handleDelete}
 										page={page}
 										selected={index}
 									/>
