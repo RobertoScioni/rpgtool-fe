@@ -41,6 +41,7 @@ const Manager = (props) => {
 		try {
 			let newOne = await fetches.createOrUpdate(entry, mode)
 			if (!entry._id) {
+				newOne.owner = localStorage.getItem("id")
 				setCampaigns(campaigns.concat(newOne))
 			}
 		} catch (error) {
@@ -87,7 +88,7 @@ const Manager = (props) => {
 						save={createElement}
 						mode={mode}
 						entry={campaignId ? { campaign } : "undefined"}
-						placeholder="New Campaign"
+						placeholder={`New ${mode}`}
 						templates={templates}
 					/>
 				)}
