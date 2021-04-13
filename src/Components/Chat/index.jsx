@@ -280,8 +280,8 @@ const Chat = () => {
 												className={
 													recipientCharacters.length &&
 													recipientCharacters.includes(character)
-														? "w-20 mb-1 ring-4 ring-yellow-400"
-														: "w-20 mb-1"
+														? "w-20 mb-1 ring-4 ring-yellow-400 bg-gray-300 rounded-sm"
+														: "w-20 mb-1 bg-gray-300 rounded-sm"
 												}
 												title={character.name}
 												alt={character.name}
@@ -310,8 +310,8 @@ const Chat = () => {
 									}}
 									className={
 										identity._id === character._id
-											? "w-20 m-3 ring-4 ring-yellow-400 bg-gray-300"
-											: "w-20 m-3 bg-gray-300"
+											? "w-20 m-3 ring-4 ring-yellow-400 bg-gray-300 rounded-sm"
+											: "w-20 m-3 bg-gray-300 rounded-sm"
 									}
 								/>
 							))}
