@@ -82,7 +82,7 @@ const Manager = (props) => {
 				<meta name={mode} content="" />
 			</Helmet>
 			<Navbar path={mode} />
-			<div className=" ml-4 pb-4 flex flex-wrap justify-items-center gap-4">
+			<div className=" mx-1 md:mx-4 pb-4 flex flex-wrap justify-items-center gap-4">
 				{(!campaignId || campaign.owner === localStorage.getItem("id")) && (
 					<Element
 						save={createElement}

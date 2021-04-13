@@ -39,10 +39,10 @@ const Element = (props) => {
 	}, [props])
 
 	return (
-		<div className="border-2 hover:border-green-400 border-yellow-500 p-2 rounded-md w-max bg-gray-700 h-full">
+		<div className="border-2 hover:border-green-400 border-yellow-500 p-2 rounded-md bg-gray-700 h-full">
 			<div className="flex items-center justify-center">
 				<div
-					className="flex flex-row h-28 w-max"
+					className="flex flex-row h-28 "
 					onKeyDown={(e) => {
 						if (e.key === "Escape") {
 							setEdit(false)
@@ -52,19 +52,19 @@ const Element = (props) => {
 					<span
 						{...getRootProps({
 							className:
-								"flex items-center dropzone mr-2 h-28 w-28 overflow-y-hidden flex justify-center align-center bg-gray-500 rounded-md ring-1 ring-gray-50",
+								"flex items-center dropzone  mr-2 h-14 w-14 md:h-28 md:w-28 overflow-y-hidden flex justify-center align-center bg-gray-500 rounded-md ring-1 ring-gray-50",
 						})}
 					>
 						<img
 							src={file.preview || imgURL}
 							alt="element"
-							className={`object-scale-down h-28 w-28 ${
+							className={`object-scale-down h-14 w-14 md:h-28 md:w-28  ${
 								file.preview || imgURL ? "" : "hidden"
 							}`}
 						></img>
 						<input {...getInputProps()} disabled={!edit} />
 					</span>
-					<span className="flex flex-col">
+					<span className="flex flex-col flex-shrink">
 						<div className="flex">
 							<input
 								placeholder={props.placeholder ? props.placeholder : "name"}
