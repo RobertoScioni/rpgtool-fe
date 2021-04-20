@@ -21,6 +21,18 @@ const CharacterSheet = (props) => {
 		setPages(aux)
 	}
 
+	const preparse=(macro)=>{
+		console.log('preparsing the macro')
+		//retrieve all the macros and counters from all the pages and from the universal counters
+		let output=macro
+		//some things should not be one liners...
+		Object.values({...pages}).flat().filter(macro=>macro.hasOwnProperty('macro')||macro.hasOwnProperty('min')).concat(counters).forEach(variable=>output=output.replace('@'+variable.name,variable.macro?variable.macro.replace(/[\[\]]/g,''):variable.value))
+
+		console.log(output)
+		console.log(' end of macro preparsing')
+		return output
+	}
+
 	useEffect(() => {
 		//component did mount
 		//must cycle the Counters to prepare the state for them
@@ -88,8 +100,9 @@ const CharacterSheet = (props) => {
 									<button
 										className="bg-gray-500 p-2 m-1 rounded-md"
 										onClick={() => {
+											const parsed=preparse(macro.macro);
 											if (props.send)
-												props.send(macro.name + ": " + macro.macro)
+												props.send(macro.name + ": " + parsed)
 										}}
 										key={`macro-${macro.name}-${index}`}
 									>
