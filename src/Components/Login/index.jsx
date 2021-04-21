@@ -22,9 +22,9 @@ const Login = () => {
 					}),
 				})
 
-				if (response.status === 200) {
+				/* if (response.status === 200) {
 					history.push("/campaigns")
-				} else console.log("not logged in")
+				} else console.log("not logged in") */
 			} catch (error) {
 				console.log("not logged in", error)
 			}
@@ -51,7 +51,7 @@ const Login = () => {
 					me = await me.json()
 					console.log(me)
 					localStorage.setItem("id", me.id)
-					history.push("/campaigns")
+				//	history.push("/campaigns")
 				}
 			} catch (error) {
 				console.log(error)
