@@ -21,7 +21,7 @@
 		"react-router-dom": "^5.2.0",
 		"react-scripts": "5.0.1",
 		"react-string-replace": "^0.4.4",
-		"serve": "^11.3.2",
+		"serve": "^14.1.2",
 		"socket.io-client": "^2.4.0",
 		"tailwind-scrollbar": "^1.2.4",
 		"tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.3",
